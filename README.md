@@ -7,7 +7,8 @@ Update config.json that has information about the swift packages as well as coco
 Then run **swift run Tron sampleConfig.json**
 
 **Please note:**
-1. Currently, the above works with Xcode 12.
+1. Currently, the above works only with Xcode 12.
 2. Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully. 
+3. Cocoapods support is WIP.
 
 
