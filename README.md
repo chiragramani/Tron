@@ -4,7 +4,7 @@ Tron is library that gives the binary size contribution of a set of swift packag
 
 Update config.json that has information about the swift packages as well as cocoapods. 
 
-Then run **swift run Tron sampleConfig.json**
+Then run **swift run Tron tronSampleConfig.json**
 
 **Please note:**
 1. Currently, the above works only with Xcode 12.
