@@ -1,0 +1,14 @@
+{
+  "packages": [
+    {
+      "remote": {
+        "productName": "Alamofire",
+        "exactVersion": "5.2.0",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        
+      },
+    },
+  ],
+  "linkerArguments": "-configuration Release CODE_SIGN_IDENTITY=”” CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO CODE_SIGN_ENTITLEMENTS=”” ARCHS=arm64",
+  "targetOS": "iOS"
+}
