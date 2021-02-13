@@ -39,6 +39,68 @@ final class TronCore {
     
     // MARK: Private
     
+    private func startCore(_ config: TronConfig) {
+        do {
+            logger.logInfo("🚀 Processing template...")
+            
+            logger.logInfo("🚀 Copying templates to temp directories for analysis...")
+            
+            // Copy it in two different directories - one for default and the other for adding a swift package.
+            try tronFileManager.copyFolders(to: urlProvider.templateDestinationDirectoryURL,
+                                             from: urlProvider.templateFolderURL(targetOS: config.targetOS))
+            
+            try tronFileManager.copyFolders(to: urlProvider.templateWithDepsDestinationDirectoryURL,
+                                             from: urlProvider.templateFolderURL(targetOS: config.targetOS))
+            
+            logger.logInfo("Template Project Directory URL: \(urlProvider.templateDestinationDirectoryURL.absoluteString)")
+            logger.logInfo("Template With Dependencies Project Directory URL: \(urlProvider.templateWithDepsDestinationDirectoryURL.absoluteString)")
+            
+            
+            try packageWriter.add(packages: config.packages,
+                                   to: urlProvider.templateWithDepsProjectURL)
+            
+            try! podFileWriter.add(config.pods,
+                                   version: "11",
+                                   projectURL: urlProvider.templateWithDepsProjectURL)
+            
+            
+            
+            // Generating first archive
+            logger.logInfo("🚀 Generating Template Archive...")
+            shell.execute(ShellCommand.archiveProject(urlProvider.templateDestinationDirectoryURL,
+                                                      isWorkSpace: false))
+            
+            logger.logInfo("🚀 Generating Template Archive IPA...")
+            shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
+            
+            
+            // Generating Second archive
+            logger.logInfo("🚀 Generating Template with Dependencies added...")
+            shell.execute(ShellCommand.archiveProject(urlProvider.templateWithDepsDestinationDirectoryURL,
+                                                      isWorkSpace: !config.pods.isEmpty))
+            
+            logger.logInfo("🚀 Generating Template with Dependencies IPA...")
+            shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL))
+            
+            // Computing Size contribution
+            logger.logInfo("🚀 Computing Size contribution...")
+            
+            let ipaSizeDifferenceInBytes = try tronFileManager.fileSizeDifferenceBetween(url1: urlProvider.templateIPAURL,
+                                                                                          url2: urlProvider.templateWithDepsIPAURL)
+            let formattedDifference = byteCountFormatter.string(fromByteCount: Int64(ipaSizeDifferenceInBytes))
+            
+            logger.logSuccess("Approximate contribution is: \(ipaSizeDifferenceInBytes) bytes = \(formattedDifference)")
+            
+            logger.logInfo("🚀 Performing Cleanup...")
+            try? tronFileManager.removeItem(at: urlProvider.templateDestinationDirectoryURL)
+            try? tronFileManager.removeItem(at: urlProvider.templateWithDepsDestinationDirectoryURL)
+            
+            logger.logSuccess("All done 🎉")
+        } catch let error {
+            logger.logError("Error: \(error.localizedDescription)")
+        }
+    }
+    
     private let tronFileManager: TronFileManaging
     private let shell: Shell
     private let urlProvider: TronURLProviding
@@ -51,64 +113,6 @@ final class TronCore {
         formatter.allowedUnits = .useAll
         return formatter
     }()
-    
-    private func startCore(_ config: TronConfig) {
-        logger.logInfo("🚀 Processing template...")
-        
-        logger.logInfo("🚀 Copying templates to temp directories for analysis...")
-        
-        // 2. Copy it in two different directories - one for default and the other for adding a swift package.
-        try! tronFileManager.copyFolders(to: urlProvider.templateDestinationDirectoryURL,
-                                         from: urlProvider.templateFolderURL(targetOS: config.targetOS))
-        
-        try! tronFileManager.copyFolders(to: urlProvider.templateWithDepsDestinationDirectoryURL,
-                                         from: urlProvider.templateFolderURL(targetOS: config.targetOS))
-        
-        logger.logInfo("Template Project Directory URL: \(urlProvider.templateDestinationDirectoryURL.absoluteString)")
-        logger.logInfo("Template With Dependencies Project Directory URL: \(urlProvider.templateWithDepsDestinationDirectoryURL.absoluteString)")
-        
-        
-        try! packageWriter.add(packages: config.packages,
-                               to: urlProvider.templateWithDepsProjectURL)
-        
-        try! podFileWriter.add(config.pods,
-                          version: "11",
-                          projectURL: urlProvider.templateWithDepsProjectURL)
-        
-        
-        
-        // Generating first archive
-        logger.logInfo("🚀 Generating Template Archive...")
-        shell.execute(ShellCommand.archiveProject(urlProvider.templateDestinationDirectoryURL,
-                                                  isWorkSpace: false))
-        
-        logger.logInfo("🚀 Generating Template Archive IPA...")
-        shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
-        
-        
-        // Generating Second archive
-        logger.logInfo("🚀 Generating Template with Dependencies added...")
-        shell.execute(ShellCommand.archiveProject(urlProvider.templateWithDepsDestinationDirectoryURL,
-                                                  isWorkSpace: !config.pods.isEmpty))
-        
-        logger.logInfo("🚀 Generating Template with Dependencies IPA...")
-        shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL))
-        
-        // Computing Size contribution
-        logger.logInfo("🚀 Computing Size contribution...")
-        
-        let ipaSizeDifferenceInBytes = try! tronFileManager.fileSizeDifferenceBetween(url1: urlProvider.templateIPAURL,
-                                                                                      url2: urlProvider.templateWithDepsIPAURL)
-        let formattedDifference = byteCountFormatter.string(fromByteCount: Int64(ipaSizeDifferenceInBytes))
-        
-        logger.logSuccess("Approximate contribution is: \(ipaSizeDifferenceInBytes) bytes = \(formattedDifference)")
-        
-        logger.logInfo("🚀 Performing Cleanup...")
-        try? tronFileManager.removeItem(at: urlProvider.templateDestinationDirectoryURL)
-        try? tronFileManager.removeItem(at: urlProvider.templateWithDepsDestinationDirectoryURL)
-        
-        logger.logSuccess("All done 🎉")
-    }
 }
 
 
