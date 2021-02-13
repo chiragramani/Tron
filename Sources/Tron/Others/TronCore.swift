@@ -59,11 +59,10 @@ final class TronCore {
             try packageWriter.add(packages: config.packages,
                                    to: urlProvider.templateWithDepsProjectURL)
             
-            try! podFileWriter.add(config.pods,
-                                   version: "11",
-                                   projectURL: urlProvider.templateWithDepsProjectURL)
-            
-            
+            try podFileWriter.add(config.pods,
+                                   minDeploymentTarget: config.minDeploymentTarget,
+                                   projectURL: urlProvider.templateWithDepsProjectURL,
+                                   targetOS: config.targetOS)
             
             // Generating first archive
             logger.logInfo("🚀 Generating Template Archive...")

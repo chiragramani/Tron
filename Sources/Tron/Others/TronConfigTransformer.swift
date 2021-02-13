@@ -21,7 +21,8 @@ struct TronConfigTransformer {
         return TronConfig(packages: packages,
                           linkerArguments: config.linkerArguments,
                           targetOS: config.targetOS,
-                          pods: pods)
+                          pods: pods,
+                          minDeploymentTarget: config.minDeploymentTarget)
     }
 }
 

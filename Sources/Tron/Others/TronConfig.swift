@@ -16,4 +16,5 @@ struct TronConfig: Decodable {
     let linkerArguments: String
     let targetOS: TargetOS
     let pods: [Pod]
+    let minDeploymentTarget: String
 }
