@@ -35,7 +35,9 @@ struct PodFileWriter: PodFileWriting {
         let fileStringContent = podFileContentsFor(pods,
                                                    version: version)
         
-        let fileURL = projectURL.appendingPathComponent("Podfile")
+        let fileURL = URL(fileURLWithPath: projectURL
+                            .deletingLastPathComponent().path)
+            .appendingPathComponent("Podfile")
 
         try fileStringContent.write(to: fileURL,
                                     atomically: false,

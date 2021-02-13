@@ -30,8 +30,8 @@ struct ShellCommand {
     
     private static let exportIPACommand = "xcodebuild -exportArchive -archivePath Template.xcarchive -exportPath . Template -exportOptionsPlist ExportOptions.plist"
     
-    private static let podInit = "/usr/local/bin/pod init"
-    private static let podInstall = "/usr/local/bin/pod install"
+    private static let podInit = "pod init"
+    private static let podInstall = "pod install"
     
     static func archiveProject(_ projectURL: URL, isWorkSpace: Bool) -> String {
         if isWorkSpace {
@@ -46,11 +46,11 @@ struct ShellCommand {
     }
     
     static func podinit(projectURL: URL) -> String {
-        "cd \(projectURL.path)/ && \(podInit)"
+        "cd \(projectURL.deletingLastPathComponent().path)/ && \(podInit)"
     }
     
     static func podInstall(projectURL: URL) -> String {
-        "cd \(projectURL.path)/ && \(podInstall)"
+        "cd \(projectURL.deletingLastPathComponent().path)/ && \(podInstall)"
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 extension Process {
     @discardableResult func launchBash(withCommand command: String, logger: TronLogging) -> String? {
         launchPath = "/bin/bash"
-        arguments = ["-c", command]
+        arguments = ["--login", "-c", command]
         
         let pipe = Pipe()
         standardOutput = pipe
