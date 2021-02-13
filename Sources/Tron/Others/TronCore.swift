@@ -10,19 +10,49 @@ import Foundation
 
 final class TronCore {
     
-    init(projectAssistant: TronProjectAssisting = TronProjectAssistant(),
-         tronFileManager: TronFileManaging = TronFileManager(),
+    init(tronFileManager: TronFileManaging = TronFileManager(),
          shell: Shell = Shell(),
          urlProvider: TronURLProviding = TronURLProvider(),
-         logger: TronLogging = TronLogger()) {
-        self.projectAssistant = projectAssistant
+         logger: TronLogging = TronLogger(),
+         packageWriter: SwiftPackageWriting = SwiftPackageWriter(),
+         podFileWriter: PodFileWriting = PodFileWriter()) {
         self.tronFileManager = tronFileManager
         self.shell = shell
         self.urlProvider = urlProvider
         self.logger = logger
+        self.packageWriter = packageWriter
+        self.podFileWriter = podFileWriter
     }
     
     func start(with config: TronConfig) {
+        do {
+            let config = try TronConfigTransformer().validate(config)
+            startCore(config)
+        } catch TronConfigTransformerError.noDependenciesFound {
+            logger.logError("No valid dependencies found.")
+        } catch {
+            logger.logError("Invalid config file.")
+        }
+    }
+    
+    
+    
+    // MARK: Private
+    
+    private let tronFileManager: TronFileManaging
+    private let shell: Shell
+    private let urlProvider: TronURLProviding
+    private let logger: TronLogging
+    private let packageWriter: SwiftPackageWriting
+    private let podFileWriter: PodFileWriting
+    
+    private lazy var byteCountFormatter: ByteCountFormatter = {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = .useAll
+        return formatter
+    }()
+    
+    private func startCore(_ config: TronConfig) {
         logger.logInfo("🚀 Processing template...")
         
         logger.logInfo("🚀 Copying templates to temp directories for analysis...")
@@ -38,35 +68,31 @@ final class TronCore {
         logger.logInfo("Template With Dependencies Project Directory URL: \(urlProvider.templateWithDepsDestinationDirectoryURL.absoluteString)")
         
         
-        let templateProject = try! XcodeProj(path: .init(urlProvider.templateWithDepsProjectURL.path))
+        try! packageWriter.add(packages: config.packages,
+                               to: urlProvider.templateWithDepsProjectURL)
         
-        logger.logInfo("🚀 Adding packages...")
-        try! projectAssistant.addPackages(packages: config.packages,
-                                          to: templateProject)
+        try! podFileWriter.add(config.pods,
+                          version: "11",
+                          projectURL: urlProvider.templateWithDepsProjectURL)
         
-        logger.logInfo("🚀 Updating Project...")
-        try! projectAssistant.writeProject(templateProject,
-                                           to: urlProvider.templateWithDepsProjectURL)
         
         
         // Generating first archive
         logger.logInfo("🚀 Generating Template Archive...")
-        shell.execute(ShellCommand.archiveProject(urlProvider.templateDestinationDirectoryURL),
-                      logger: logger)
+        shell.execute(ShellCommand.archiveProject(urlProvider.templateDestinationDirectoryURL,
+                                                  isWorkSpace: false))
         
         logger.logInfo("🚀 Generating Template Archive IPA...")
-        shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL),
-                      logger: logger)
+        shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
         
         
         // Generating Second archive
-        logger.logInfo("🚀 Generating Template with Alamofire Archive...")
-        shell.execute(ShellCommand.archiveProject(urlProvider.templateWithDepsDestinationDirectoryURL),
-                                                  logger: logger)
+        logger.logInfo("🚀 Generating Template with Dependencies added...")
+        shell.execute(ShellCommand.archiveProject(urlProvider.templateWithDepsDestinationDirectoryURL,
+                                                  isWorkSpace: !config.pods.isEmpty))
         
-        logger.logInfo("🚀 Generating Template with Alamofire Archive IPA...")
-        shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL),
-                      logger: logger)
+        logger.logInfo("🚀 Generating Template with Dependencies IPA...")
+        shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL))
         
         // Computing Size contribution
         logger.logInfo("🚀 Computing Size contribution...")
@@ -83,22 +109,6 @@ final class TronCore {
         
         logger.logSuccess("All done 🎉")
     }
-    
-    
-    
-    // MARK: Private
-    
-    private let projectAssistant: TronProjectAssisting
-    private let tronFileManager: TronFileManaging
-    private let shell: Shell
-    private let urlProvider: TronURLProviding
-    private let logger: TronLogging
-    
-    private lazy var byteCountFormatter: ByteCountFormatter = {
-        let formatter = ByteCountFormatter()
-        formatter.allowedUnits = .useAll
-        return formatter
-    }()
 }
 
 

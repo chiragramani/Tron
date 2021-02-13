@@ -15,4 +15,5 @@ struct TronConfig: Decodable {
     let packages: [SwiftPackage]
     let linkerArguments: String
     let targetOS: TargetOS
+    let pods: [Pod]
 }
