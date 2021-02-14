@@ -6,6 +6,12 @@ Update config.json that has information about the swift packages as well as coco
 
 Then run **swift run Tron tronSampleConfig.json**
 
+**Why measuring contribution of a dependency is important?**
+
+Well, we are adding a new member(dependency) to our applcation that is going to help us with a lot of things. Since this also adds to the binary size and giving the fact that binary size is always related to download experience that users go through, its worth exploring its contribution. This analysis helps us in a lot of ways:
+1. It gives an approximate idea of the app size increase. If the size increase is surprising, it again opens an opportunity to collaborate and explore if there is a way to either get a thinned version of the dependency etc.
+2. It helps us to reason how the similar dependencies stand against each other with their respective contributions to binary size. 
+
 **Please note:**
 1. Currently, the above works only with Xcode 12.
 2. Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully. 
