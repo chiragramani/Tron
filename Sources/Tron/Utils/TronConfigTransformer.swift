@@ -12,7 +12,7 @@ enum TronConfigTransformerError: Error {
 }
 
 struct TronConfigTransformer {
-    func validate(_ config: TronConfig) throws -> TronConfig {
+    func transform(_ config: TronConfig) throws -> TronConfig {
         let packages = config.packages.filter { $0.isValid }
         let pods = config.pods.filter { $0.isValid }
         guard (packages.count + pods.count) > 0 else {

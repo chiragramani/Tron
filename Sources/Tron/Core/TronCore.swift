@@ -26,7 +26,7 @@ final class TronCore {
     
     func start(with config: TronConfig) {
         do {
-            let config = try TronConfigTransformer().validate(config)
+            let config = try TronConfigTransformer().transform(config)
             startCore(config)
         } catch TronConfigTransformerError.noDependenciesFound {
             logger.logError("No valid dependencies found.")
