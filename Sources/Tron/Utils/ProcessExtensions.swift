@@ -8,7 +8,8 @@
 import Foundation
 
 extension Process {
-    @discardableResult func launchBash(withCommand command: String, logger: TronLogging) -> String? {
+    @discardableResult func launchBash(withCommand command: String,
+                                       logger: TronLogging) -> String? {
         launchPath = "/bin/bash"
         arguments = ["--login", "-c", command]
         
@@ -25,29 +26,8 @@ extension Process {
         let outputHandle = pipe.fileHandleForReading
         outputHandle.waitForDataInBackgroundAndNotify()
         
-        outputHandle.readabilityHandler = { pipe in
-            guard let currentOutput = String(data: pipe.availableData, encoding: .utf8) else {
-                logger.logError("🔨 Error decoding data: \(pipe.availableData)")
-                return
-            }
-            
-            guard !currentOutput.isEmpty else {
-                return
-            }
-            logger.logInfo(currentOutput)
-        }
-        
-        errorOutputHandle.readabilityHandler = { pipe in
-            guard let currentOutput = String(data: pipe.availableData, encoding: .utf8) else {
-                logger.logError("🔨 Error decoding data: \(pipe.availableData)")
-                return
-            }
-            
-            guard !currentOutput.isEmpty else {
-                return
-            }
-            logger.logInfo(currentOutput)
-        }
+        outputHandle.readabilityHandler = readabilityHandlerWith(logger)
+        errorOutputHandle.readabilityHandler = readabilityHandlerWith(logger)
         
         
         launch()
@@ -58,5 +38,19 @@ extension Process {
         
         let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
         return String(data: outputData, encoding: .utf8)
+    }
+    
+    // MARK: Private
+    
+    private func readabilityHandlerWith(_ logger: TronLogging) -> ((FileHandle) -> Void)? {
+        { pipe in
+            guard let currentOutput = String(data: pipe.availableData,
+                                             encoding: .utf8) else {
+                logger.logError("🔨 Error decoding data: \(pipe.availableData)")
+                return
+            }
+            guard !currentOutput.isEmpty else { return }
+            logger.logInfo(currentOutput)
+        }
     }
 }

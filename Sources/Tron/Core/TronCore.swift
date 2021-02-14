@@ -96,9 +96,7 @@ final class TronCore {
             
             logger.logSuccess("Approximate contribution is: \(ipaSizeDifferenceInBytes) bytes = \(formattedDifference)")
             
-            logger.logInfo("🚀 Performing Cleanup...")
-            try? tronFileManager.removeItem(at: urlProvider.templateDestinationDirectoryURL)
-            try? tronFileManager.removeItem(at: urlProvider.templateWithDepsDestinationDirectoryURL)
+            logger.logInfo("🚀 The temporary directories are the following:\n1. Base project:  \(urlProvider.templateDestinationDirectoryURL)\n2. Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL)\nPlease have a look to explore the projects, their base setup, impact post adding the dependencies, their respective archives/IPAs etc.")
             
             logger.logSuccess("All done 🎉")
         } catch let error {
