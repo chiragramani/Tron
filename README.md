@@ -1,4 +1,4 @@
-# Tron
+# ![alt text](https://github.com/chiragramani/Tron/blob/main/tron.png?raw=true)
 
 Tron is library that gives the binary size contribution of a set of swift package(s) and cocoapods.
 
