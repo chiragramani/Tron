@@ -25,6 +25,5 @@ Well, we are adding a new member(dependency) to our applcation that is going to 
 ## Requirements
 
 - Xcode 12
-- Swift 5
-
+- If measuring pods contribution, then cocoapods should be installed.
 ---
