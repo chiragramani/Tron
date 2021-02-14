@@ -13,7 +13,8 @@ protocol TronFileManaging {
     
     func removeItem(at: URL) throws
     
-    func fileSizeDifferenceBetween(url1: URL, url2: URL) throws -> UInt64
+    func fileSizeDifferenceBetween(url1: URL,
+                                   url2: URL) throws -> UInt64
 }
 
 enum TronFileManagerError: Error {
