@@ -19,26 +19,26 @@ struct Shell {
     }
     
     // MARK: Private
+    
     private let logger: TronLogging
 }
 
 struct ShellCommand {
     
-    private static let archiveCommand = "xcodebuild -project Template.xcodeproj -scheme Template -configuration Release clean archive -archivePath Template.xcarchive CODE_SIGN_IDENTITY=”” CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO CODE_SIGN_ENTITLEMENTS=”” ARCHS=arm64 iOSVersion=11.0"
-    
-    private static let archiveWorkspaceCommand = "xcodebuild -workspace Template.xcworkspace -scheme Template -configuration Release clean archive -archivePath Template.xcarchive CODE_SIGN_IDENTITY=”” CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO CODE_SIGN_ENTITLEMENTS=”” ARCHS=arm64 iOSVersion=11.0"
-    
-    private static let exportIPACommand = "xcodebuild -exportArchive -archivePath Template.xcarchive -exportPath . Template -exportOptionsPlist ExportOptions.plist"
-    
-    private static let podInit = "pod init"
-    private static let podInstall = "pod install"
-    
-    static func archiveProject(_ projectURL: URL, isWorkSpace: Bool) -> String {
-        if isWorkSpace {
-            return "cd \(projectURL.path)/ && \(archiveWorkspaceCommand)"
-        } else {
-            return "cd \(projectURL.path)/ && \(archiveCommand)"
-        }
+    static func archiveProject(_ projectURL: URL,
+                               isWorkSpace: Bool,
+                               linkerArguments: LinkerArguments,
+                               targetOS: TargetOS,
+                               minDeploymentTarget: String) -> String {
+        let baseCommand = isWorkSpace ? archiveWorkspaceCommand : archiveCommand
+        let archiveOverrideCommand = baseCommand
+            .replacingOccurrences(of: ShellCommand.linkerArguments,
+                                  with: linkerArguments.xcodeLinkerArguments)
+            .replacingOccurrences(of: platformArgument,
+                                  with: targetOS.xcodePlatformArgument)
+            .replacingOccurrences(of: platformArgumentValue,
+                                  with: minDeploymentTarget)
+        return "cd \(projectURL.path)/ && \(archiveOverrideCommand)"
     }
     
     static func exportIPA(_ projectURL: URL) -> String {
@@ -52,5 +52,43 @@ struct ShellCommand {
     static func podInstall(projectURL: URL) -> String {
         "cd \(projectURL.deletingLastPathComponent().path)/ && \(podInstall)"
     }
+    
+    // MARK: Private
+    
+    private static let platformArgument = "{platformArgument}"
+    private static let platformArgumentValue = "{platformArgumentValue}"
+    private static let linkerArguments = "{linkerArguments}"
+    
+    private static let archiveCommand = "xcodebuild -project Template.xcodeproj -scheme Template -configuration Release clean archive -archivePath Template.xcarchive \(linkerArguments) \(platformArgument)=\(platformArgumentValue)"
+    
+    private static let archiveWorkspaceCommand = "xcodebuild -workspace Template.xcworkspace -scheme Template -configuration Release clean archive -archivePath Template.xcarchive \(linkerArguments) \(platformArgument)=\(platformArgumentValue)"
+    
+    private static let exportIPACommand = "xcodebuild -exportArchive -archivePath Template.xcarchive -exportPath . Template -exportOptionsPlist ExportOptions.plist"
+    
+    private static let podInit = "pod init"
+    private static let podInstall = "pod install"
 }
 
+private extension LinkerArguments {
+    var xcodeLinkerArguments: String {
+        let codeSignIdentityArgument = "CODE_SIGN_IDENTITY=”\(codeSignIdentity)”"
+        let codeSigningRequiredArgument = "CODE_SIGNING_REQUIRED=\(isCodeSigningRequired ? "YES": "NO")"
+        let codeSigningAllowedArgument = "CODE_SIGNING_ALLOWED=\(isCodeSigningAllowed ? "YES": "NO")"
+        let codeSignEntitlementsArgument = "CODE_SIGN_ENTITLEMENTS=”\(codeSignEntitlements)”"
+        let architecturesArgument = "ARCHS=\(architecture)"
+        return [codeSignIdentityArgument,
+                codeSigningRequiredArgument,
+                codeSigningAllowedArgument,
+                codeSignEntitlementsArgument,
+                architecturesArgument].joined(separator: " ")
+    }
+}
+
+private extension TargetOS {
+    var xcodePlatformArgument: String {
+        switch self {
+        case .iOS:
+            return "iOSVersion"
+        }
+    }
+}

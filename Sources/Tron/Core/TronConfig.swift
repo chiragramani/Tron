@@ -13,7 +13,7 @@ enum TargetOS: String, Decodable {
 
 struct TronConfig: Decodable {
     let packages: [SwiftPackage]
-    let linkerArguments: String
+    let linkerArguments: LinkerArguments
     let targetOS: TargetOS
     let pods: [Pod]
     let minDeploymentTarget: String

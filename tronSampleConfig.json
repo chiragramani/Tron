@@ -14,7 +14,13 @@
       }
     },
   ],
-  "linkerArguments": "-configuration Release CODE_SIGN_IDENTITY=”” CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO CODE_SIGN_ENTITLEMENTS=”” ARCHS=arm64",
+  "linkerArguments": {
+    "codeSignIdentity": "",
+    "isCodeSigningRequired": false,
+    "isCodeSigningAllowed": false,
+    "codeSignEntitlements": "",
+    "architecture": "arm64"
+  },
   "targetOS": "iOS",
   "minDeploymentTarget": "11.0",
   "pods": [
