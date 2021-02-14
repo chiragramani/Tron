@@ -3,7 +3,7 @@
  <img src="https://github.com/chiragramani/Tron/blob/main/tron.png?raw=true">
 </p>
 
-Tron is command-line Swift package that gives the binary size contribution of a set of swift package(s) and cocoapod(s).
+Tron is command-line Swift tool that helps with providing an approximate binary size contribution of a set of swift package(s) and cocoapod(s).
 
 Update config.json that has information about the swift packages as well as cocoapods. 
 
