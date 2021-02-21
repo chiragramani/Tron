@@ -22,7 +22,7 @@
     "architecture": "arm64"
   },
   "targetOS": "iOS",
-  "minDeploymentTarget": "11.3",
+  "minDeploymentTarget": "14.3",
   "pods": [
       {
           "name": "RxSwift",
