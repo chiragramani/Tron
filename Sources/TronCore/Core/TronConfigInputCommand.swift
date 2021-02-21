@@ -8,7 +8,9 @@
 import Foundation
 import ArgumentParser
 
-struct TronConfigInputCommand: ParsableCommand {
+public struct TronConfigInputCommand: ParsableCommand {
+    
+    public init() { }
     
     @Argument(help: "Path to the Tron Config File - please refer to SampleConfig.json for reference",
               transform: URL.init(fileURLWithPath:))
@@ -19,7 +21,7 @@ struct TronConfigInputCommand: ParsableCommand {
     @Flag(name: .shortAndLong)
     var verbose = false
     
-    mutating func validate() throws {
+    public mutating func validate() throws {
         guard FileManager.default.fileExists(atPath: tronConfigFilePath.path) else {
             throw ValidationError("File does not exist at \(tronConfigFilePath.path)")
         }
@@ -28,7 +30,7 @@ struct TronConfigInputCommand: ParsableCommand {
         
     }
     
-    func run() throws {
+    public func run() throws {
         Shell.isVerbose = verbose
         TronCore().start(with: config)
     }

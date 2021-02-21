@@ -31,7 +31,6 @@ final class TronURLProvider: TronURLProviding {
     }
     
     func templateFolderURL(targetOS: TargetOS) -> URL {
-        
         let templateProjectPath = Bundle.module.path(forResource: "Template",
                                                      ofType: "xcodeproj",
                                                      inDirectory: "\(targetOS.rawValue)/Template")
