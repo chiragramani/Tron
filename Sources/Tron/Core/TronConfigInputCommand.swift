@@ -16,8 +16,10 @@ struct TronConfigInputCommand: ParsableCommand {
     
     private var config: TronConfig!
     
+    @Flag(name: .shortAndLong)
+    var verbose = false
+    
     mutating func validate() throws {
-        
         guard FileManager.default.fileExists(atPath: tronConfigFilePath.path) else {
             throw ValidationError("File does not exist at \(tronConfigFilePath.path)")
         }
@@ -27,6 +29,7 @@ struct TronConfigInputCommand: ParsableCommand {
     }
     
     func run() throws {
+        Shell.isVerbose = verbose
         TronCore().start(with: config)
     }
 }

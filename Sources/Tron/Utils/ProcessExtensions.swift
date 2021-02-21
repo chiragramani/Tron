@@ -9,7 +9,8 @@ import Foundation
 
 extension Process {
     @discardableResult func launchBash(withCommand command: String,
-                                       logger: TronLogging) -> String? {
+                                       logger: TronLogging,
+                                       isVerbose: Bool) -> String? {
         launchPath = "/bin/bash"
         arguments = ["--login", "-c", command]
         
@@ -26,9 +27,10 @@ extension Process {
         let outputHandle = pipe.fileHandleForReading
         outputHandle.waitForDataInBackgroundAndNotify()
         
-        outputHandle.readabilityHandler = readabilityHandlerWith(logger)
-        errorOutputHandle.readabilityHandler = readabilityHandlerWith(logger)
-        
+        if isVerbose {
+            outputHandle.readabilityHandler = readabilityHandlerWith(logger)
+            errorOutputHandle.readabilityHandler = readabilityHandlerWith(logger)
+        }
         
         launch()
         
