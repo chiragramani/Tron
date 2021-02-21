@@ -24,15 +24,13 @@ protocol TronURLProviding {
 
 final class TronURLProvider: TronURLProviding {
     
-    private let fileManager: FileManager
-    
     init(fileManager: FileManager = .default) {
         self.fileManager = fileManager
     }
     
     func templateFolderURL(targetOS: TargetOS) -> URL {
-        let templateProjectPath = Bundle.module.path(forResource: "Template",
-                                                     ofType: "xcodeproj",
+        let templateProjectPath = Bundle.module.path(forResource: Constants.template,
+                                                     ofType: Constants.xcodeProj,
                                                      inDirectory: "\(targetOS.rawValue)/Template")
         return URL(fileURLWithPath: templateProjectPath!).deletingLastPathComponent()
     }
@@ -42,19 +40,32 @@ final class TronURLProvider: TronURLProviding {
     
     lazy var templateWithDepsDestinationDirectoryURL = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString,
                                                                                                              isDirectory: true)
-    lazy var templateProjectURL = templateDestinationDirectoryURL.appendingPathComponent("Template.xcodeproj")
-    lazy var templateWithDepsProjectURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent("Template.xcodeproj")
-    lazy var templateIPAURL = templateDestinationDirectoryURL.appendingPathComponent("Template.ipa")
-    lazy var templateWithDepsIPAURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent("Template.ipa")
+    lazy var templateProjectURL = templateDestinationDirectoryURL.appendingPathComponent(Constants.templateXcodeProject)
+    lazy var templateWithDepsProjectURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent(Constants.templateXcodeProject)
+    lazy var templateIPAURL = templateDestinationDirectoryURL.appendingPathComponent(Constants.templateIPA)
+    lazy var templateWithDepsIPAURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent(Constants.templateIPA)
     
-    lazy var templateAppURL = templateDestinationDirectoryURL.appendingPathComponent("Template.xcarchive/Products/Applications/Template.app",
+    lazy var templateAppURL = templateDestinationDirectoryURL.appendingPathComponent(Constants.archiveAppPath,
                                                                                      isDirectory: true)
-    lazy var templateWithDepsAppURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent("Template.xcarchive/Products/Applications/Template.app",
+    lazy var templateWithDepsAppURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent(Constants.archiveAppPath,
                                                                                                      isDirectory: true)
     
-    lazy var templateFrameworksDirectoryURL = templateAppURL.appendingPathComponent("Frameworks",
+    lazy var templateFrameworksDirectoryURL = templateAppURL.appendingPathComponent(Constants.frameworks,
                                                                                     isDirectory: true)
-    lazy var templatWithDepsFrameworksDirectoryURL = templateWithDepsAppURL.appendingPathComponent("Frameworks",
+    lazy var templatWithDepsFrameworksDirectoryURL = templateWithDepsAppURL.appendingPathComponent(Constants.frameworks,
                                                                                                    isDirectory: true)
+    
+    // MARK: Private
+    
+    private let fileManager: FileManager
+    
+    private enum Constants {
+        static let template = "Template"
+        static let xcodeProj = "xcodeproj"
+        static let frameworks = "Frameworks"
+        static let templateIPA = "Template.ipa"
+        static let templateXcodeProject = "Template.xcodeproj"
+        static let archiveAppPath = "Template.xcarchive/Products/Applications/Template.app"
+    }
     
 }

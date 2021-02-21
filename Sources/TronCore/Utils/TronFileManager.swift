@@ -158,7 +158,6 @@ extension TronFileManagerError: LocalizedError {
 }
 
 private extension URL {
-    /// check if the URL is a directory and if it is reachable
     func isDirectoryAndReachable() throws -> Bool {
         guard try resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true else {
             return false
@@ -181,10 +180,8 @@ private extension URL {
         }
     }
 
-    /// returns the directory total size on disk
     func sizeOnDisk() throws -> Int? {
         guard let size = try directoryTotalSize(includingSubfolders: true) else { return nil }
         return size
     }
-    private static let byteCountFormatter = ByteCountFormatter()
 }
