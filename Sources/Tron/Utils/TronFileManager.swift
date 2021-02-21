@@ -14,7 +14,9 @@ protocol TronFileManaging {
     func removeItem(at: URL) throws
     
     func fileSizeDifferenceBetween(url1: URL,
-                                   url2: URL) throws -> UInt64
+                                   url2: URL) throws -> FileSizeDifference
+    
+    func files(inDirectory directoryURL: URL) throws -> [File]
 }
 
 enum TronFileManagerError: Error {
@@ -25,6 +27,19 @@ enum TronFileManagerError: Error {
                                            systemError: Error)
     case couldNotRemoveFile(url: URL,
                             systemError: Error)
+}
+
+struct File {
+    let name: String
+    let fileSizeInBytes: Int64
+    let formattedFileSize: String
+}
+
+struct FileSizeDifference {
+    let url1: URL
+    let url2: URL
+    let differenceInBytes: UInt64
+    let formattedDifference: String
 }
 
 struct TronFileManager: TronFileManaging {
@@ -46,11 +61,15 @@ struct TronFileManager: TronFileManaging {
         
     }
     
-    func fileSizeDifferenceBetween(url1: URL, url2: URL) throws -> UInt64 {
+    func fileSizeDifferenceBetween(url1: URL, url2: URL) throws -> FileSizeDifference {
         do {
             let url1Size = try sizeOfFileURL(url1)
             let url2Size = try sizeOfFileURL(url2)
-            return url1Size > url2Size ? url1Size - url2Size : url2Size - url1Size
+            let difference = url1Size > url2Size ? url1Size - url2Size : url2Size - url1Size
+            return .init(url1: url1,
+                         url2: url2,
+                         differenceInBytes: difference,
+                         formattedDifference: byteCountFormatter.string(fromByteCount: Int64(difference)))
         }
         catch let error {
             throw TronFileManagerError.couldNotComputeFileSizeDifference(url1: url1,
@@ -65,6 +84,17 @@ struct TronFileManager: TronFileManaging {
         } catch let error {
             throw TronFileManagerError.couldNotRemoveFile(url: url,
                                                           systemError: error)
+        }
+    }
+    
+    func files(inDirectory directoryURL: URL) throws -> [File]  {
+        let urls = try FileManager.default.contentsOfDirectory(at: directoryURL,
+                                                               includingPropertiesForKeys: [.fileSizeKey])
+        return try urls.map { url in
+            let fileSize = try FileManager.default.attributesOfItem(atPath: url.path)[.size] as! Int64
+            return File(name: url.lastPathComponent,
+                        fileSizeInBytes: fileSize,
+                        formattedFileSize: byteCountFormatter.string(fromByteCount: fileSize))
         }
     }
     
@@ -85,6 +115,12 @@ struct TronFileManager: TronFileManaging {
         let fileSize = attributes[FileAttributeKey.size] as! UInt64
         return fileSize
     }
+    
+    private let byteCountFormatter: ByteCountFormatter = {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = .useAll
+        return formatter
+    }()
 }
 
 
@@ -99,5 +135,5 @@ extension TronFileManagerError: LocalizedError {
             return "Could Not Remove File\n 1.url: \(url)\n \nInternal error description: \(systemError.localizedDescription)"
         }
     }
-
+    
 }

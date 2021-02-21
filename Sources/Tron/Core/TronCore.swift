@@ -97,11 +97,10 @@ final class TronCore {
             // Computing Size contribution
             logger.logInfo("🚀 Computing Size contribution...")
             
-            let ipaSizeDifferenceInBytes = try tronFileManager.fileSizeDifferenceBetween(url1: urlProvider.templateIPAURL,
+            let ipaSizeDifference = try tronFileManager.fileSizeDifferenceBetween(url1: urlProvider.templateIPAURL,
                                                                                           url2: urlProvider.templateWithDepsIPAURL)
-            let formattedDifference = byteCountFormatter.string(fromByteCount: Int64(ipaSizeDifferenceInBytes))
             
-            logger.logSuccess("Approximate contribution is: \(ipaSizeDifferenceInBytes) bytes = \(formattedDifference)")
+            logger.logSuccess("Approximate contribution is: \(ipaSizeDifference.differenceInBytes) bytes = \(ipaSizeDifference.formattedDifference)")
             
             logger.logInfo("🚀 The temporary directories are the following:\n1. Base project:  \(urlProvider.templateDestinationDirectoryURL)\n2. Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL)\nPlease have a look to explore the projects, their base setup, impact post adding the dependencies, their respective archives/IPAs etc.")
             
@@ -118,12 +117,6 @@ final class TronCore {
     private let packageWriter: SwiftPackageWriting
     private let podFileWriter: PodFileWriting
     private let projTargetVersionWriter: PBXProjTargetVersionWriting
-    
-    private lazy var byteCountFormatter: ByteCountFormatter = {
-        let formatter = ByteCountFormatter()
-        formatter.allowedUnits = .useAll
-        return formatter
-    }()
 }
 
 
