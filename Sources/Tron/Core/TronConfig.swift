@@ -17,4 +17,5 @@ struct TronConfig: Decodable {
     let targetOS: TargetOS
     let pods: [Pod]
     let minDeploymentTarget: String
+    let shouldPerformDownloadSizeAnalysis: Bool
 }

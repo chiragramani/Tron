@@ -44,4 +44,15 @@ extension TronLogging {
             logInfo(footerInfo)
         }
     }
+    func logInfoOnNewLine(_ message: String,
+                 subMessages: [String],
+                 footerInfo: String? = nil) {
+        logInfoOnNewLine(message)
+        for (index, value) in subMessages.enumerated() {
+            logInfo("\t\(index + 1).  \(value)")
+        }
+        if let footerInfo = footerInfo {
+            logInfo(footerInfo)
+        }
+    }
 }

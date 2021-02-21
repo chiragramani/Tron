@@ -22,7 +22,8 @@ struct TronConfigTransformer {
                           linkerArguments: config.linkerArguments,
                           targetOS: config.targetOS,
                           pods: pods,
-                          minDeploymentTarget: config.minDeploymentTarget)
+                          minDeploymentTarget: config.minDeploymentTarget,
+                          shouldPerformDownloadSizeAnalysis: config.shouldPerformDownloadSizeAnalysis)
     }
 }
 

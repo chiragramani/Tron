@@ -32,5 +32,6 @@
           "name": "RxCocoa",
           "version": "6.1.0"
       }
-  ]
+  ],
+  "shouldPerformDownloadSizeAnalysis": false
 }
