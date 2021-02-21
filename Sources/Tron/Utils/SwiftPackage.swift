@@ -16,15 +16,28 @@ enum SwiftPackage {
     case local(SwiftLocalPackage)
 }
 
-struct SwiftRemotePackage: Codable {
+struct SwiftRemotePackage: Codable, CustomDebugStringConvertible {
     let productName: String
     let exactVersion: String
     let repositoryURL: String
+    
+    // MARK: CustomDebugStringConvertible
+    
+    var debugDescription: String {
+        "\(productName) - \(repositoryURL) - \(exactVersion)"
+    }
+    
 }
 
-struct SwiftLocalPackage: Codable {
+struct SwiftLocalPackage: Codable, CustomDebugStringConvertible {
     let productName: String
     let absolutePath: String
+    
+    // MARK: CustomDebugStringConvertible
+    
+    var debugDescription: String {
+        "\(productName) - \(absolutePath)"
+    }
 }
 
 extension SwiftPackage: Decodable {

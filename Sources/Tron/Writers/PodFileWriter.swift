@@ -7,9 +7,15 @@
 
 import Foundation
 
-struct Pod: Decodable {
+struct Pod: Decodable, CustomDebugStringConvertible {
     let name: String
     let version: String
+    
+    // MARK: CustomDebugStringConvertible
+    
+    var debugDescription: String {
+        "\(name) - \(version)"
+    }
 }
 
 protocol PodFileWriting {
@@ -23,13 +29,21 @@ struct PodFileWriter: PodFileWriting {
     private let platform = "platform :platformOS, 'version'"
     private let targetStart = "target 'Template' do"
     private let targetEnd = "end"
-    private let shell: Shell = Shell()
+    private let shell: Shell
+    private let logger: TronLogging
+    
+    init(shell: Shell = Shell(),
+         logger: TronLogging = TronLogger()) {
+        self.shell = shell
+        self.logger = logger
+    }
     
     func add(_ pods: [Pod],
              minDeploymentTarget: String,
              projectURL: URL,
              targetOS: TargetOS) throws {
         guard !pods.isEmpty else { return }
+        logger.logInfo("🚀 Adding Pods: \(pods) ...")
         // 1. Pod init.
         shell.execute(ShellCommand.podinit(projectURL: projectURL.absoluteURL))
         

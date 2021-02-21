@@ -33,10 +33,14 @@ enum TronFileManagerError: Error {
                             systemError: Error)
 }
 
-struct File: Hashable {
+struct File: Hashable, CustomDebugStringConvertible {
     let name: String
     let fileSizeInBytes: Int64
     let formattedFileSize: String
+    
+    var debugDescription: String {
+    "\(name), \(fileSizeInBytes) bytes ~= \(formattedFileSize)"
+    }
     
 }
 

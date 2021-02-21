@@ -15,14 +15,33 @@ protocol TronLogging {
 
 struct TronLogger: TronLogging {
     func logInfo(_ message: String) {
-        print("\(message)\n")
+        print("\(message)")
     }
     
     func logError(_ message: String) {
-        print("‼️ \(message)\n")
+        print("‼️ \(message)")
     }
     
     func logSuccess(_ message: String) {
-        print("✅ \(message)\n")
+        print("✅ \(message)")
+    }
+}
+
+extension TronLogging {
+    
+    func logInfoOnNewLine(_ message: String) {
+        print("\n\(message)")
+    }
+    
+    func logInfo(_ message: String,
+                 subMessages: [String],
+                 footerInfo: String? = nil) {
+        logInfo(message)
+        for (index, value) in subMessages.enumerated() {
+            logInfo("\t\(index + 1).  \(value)")
+        }
+        if let footerInfo = footerInfo {
+            logInfo(footerInfo)
+        }
     }
 }

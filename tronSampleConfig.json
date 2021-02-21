@@ -24,6 +24,13 @@
   "targetOS": "iOS",
   "minDeploymentTarget": "11.3",
   "pods": [
-      
+      {
+          "name": "RxSwift",
+          "version": "6.1.0"
+      },
+      {
+          "name": "RxCocoa",
+          "version": "6.1.0"
+      }
   ]
 }

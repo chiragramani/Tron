@@ -55,13 +55,10 @@ final class TronCore {
             try tronFileManager.copyFolders(to: urlProvider.templateWithDepsDestinationDirectoryURL,
                                              from: urlProvider.templateFolderURL(targetOS: config.targetOS))
             
-            logger.logInfo("Template Project Directory URL: \(urlProvider.templateDestinationDirectoryURL.absoluteString)")
-            logger.logInfo("Template With Dependencies Project Directory URL: \(urlProvider.templateWithDepsDestinationDirectoryURL.absoluteString)")
-            
             // Updating target version
+            logger.logInfo("🚀 Configuring Minimum Deployment Target: \(config.targetOS) \(config.minDeploymentTarget)")
             try [urlProvider.templateProjectURL,
              urlProvider.templateWithDepsProjectURL].forEach {
-                logger.logInfo("🚀 Configuring Minimum Deployment Target")
                 try projTargetVersionWriter.configure(projectAtURL: $0,
                                                   for: config.targetOS,
                                                   targetVersion: config.minDeploymentTarget)
@@ -77,52 +74,51 @@ final class TronCore {
                                    projectURL: urlProvider.templateWithDepsProjectURL,
                                    targetOS: config.targetOS)
             
-            // Generating first archive
-            logger.logInfo("🚀 Generating Template Archive...")
+            // Generating archives
+            logger.logInfo("🚀 Generating Archives for install size analysis...")
             shell.execute(ShellCommand.archiveProject(urlProvider.templateDestinationDirectoryURL,
                                                       isWorkSpace: false,
                                                       linkerArguments: config.linkerArguments))
-            
-            logger.logInfo("🚀 Generating Template Archive IPA...")
-            shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
-            
-            
-            // Generating Second archive
-            logger.logInfo("🚀 Generating Template with Dependencies added...")
             shell.execute(ShellCommand.archiveProject(urlProvider.templateWithDepsDestinationDirectoryURL,
                                                       isWorkSpace: !config.pods.isEmpty,
                                                       linkerArguments: config.linkerArguments))
             
-            logger.logInfo("🚀 Generating Template with Dependencies IPA...")
+            // Generating ipas
+            logger.logInfo("🚀 Generating IPAs for download size analysis...")
+            shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
             shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL))
-            
+           
             // Computing Size contribution
             logger.logInfo("🚀 Computing Size contribution...")
+            
+            let archiveSizeDifference = (try tronFileManager.sizeOfFolder(at: urlProvider.templateWithDepsAppURL)) - (try tronFileManager.sizeOfFolder(at: urlProvider.templateAppURL))
+            
+            let differences = try frameworkDifferencesProvider.differencesBetween(source: urlProvider.templateFrameworksDirectoryURL, destination: urlProvider.templatWithDepsFrameworksDirectoryURL)
+           
+            logger.logInfo("The following libswift dylibs are added post linking the dependencies:",
+                           subMessages: differences.files.map { $0.debugDescription } )
+            logger.logInfoOnNewLine("\tApproximate net contribution of the above libswift dylibs: \(differences.netSizeContribution) bytes ~= \(differences.netSizeContributionFormatted)")
+
+            
+            logger.logSuccess("Approximate install size contribution including added dylibs is: \(archiveSizeDifference) bytes = \(tronFileManager.formattedFileSizeRepresentation(forBytes: archiveSizeDifference))")
+            let effectiveDiffernece = UInt64(archiveSizeDifference) - differences.netSizeContribution
+            logger.logSuccess("Approximate install size contribution without considering libSwift dylibs(iOS 12 and above) is: \(effectiveDiffernece) bytes = \(tronFileManager.formattedFileSizeRepresentation(forBytes: Int64(effectiveDiffernece)))")
             
             let ipaSizeDifference = try tronFileManager.fileSizeDifferenceBetween(url1: urlProvider.templateIPAURL,
                                                                                           url2: urlProvider.templateWithDepsIPAURL)
             
             logger.logSuccess("Approximate download size contribution is: \(ipaSizeDifference.differenceInBytes) bytes = \(ipaSizeDifference.formattedDifference)")
             
-            let archiveSizeDifference = (try tronFileManager.sizeOfFolder(at: urlProvider.templateWithDepsAppURL)) - (try tronFileManager.sizeOfFolder(at: urlProvider.templateAppURL))
-            
-            let differences = try frameworkDifferencesProvider.differencesBetween(source: urlProvider.templateFrameworksDirectoryURL, destination: urlProvider.templatWithDepsFrameworksDirectoryURL)
-            logger.logInfo("Number of dynamic libraries introduced: \(differences.files.count)\nNet contribution of the libSwift dylibs: \(differences.netSizeContribution) bytes ~= \(differences.netSizeContributionFormatted)")
-            differences.files.forEach {
-                logger.logInfo("\t \($0.name) \($0.fileSizeInBytes) bytes ~= \($0.formattedFileSize)")
-            }
-            
-            logger.logSuccess("Approximate install size contribution including added dylibs is: \(archiveSizeDifference) bytes = \(tronFileManager.formattedFileSizeRepresentation(forBytes: archiveSizeDifference))")
-            let effectiveDiffernece = UInt64(archiveSizeDifference) - differences.netSizeContribution
-            logger.logSuccess("Approximate install size contribution without considering libSwift dylibs(iOS 12 and above) is: \(effectiveDiffernece) bytes = \(tronFileManager.formattedFileSizeRepresentation(forBytes: Int64(effectiveDiffernece)))")
-            
-            
-            logger.logInfo("🚀 The temporary directories are the following:\n1. Base project:  \(urlProvider.templateDestinationDirectoryURL)\n2. Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL)\nPlease have a look to explore the projects, their base setup, impact post adding the dependencies, their respective archives/IPAs etc.")
             
             logger.logSuccess("All done 🎉")
         } catch let error {
             logger.logError("Error: \(error.localizedDescription)")
         }
+        logger.logInfo("ℹ️  The temporary directories are the following:",
+                       subMessages: ["Base project:  \(urlProvider.templateDestinationDirectoryURL.path)",
+                       "Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL.path)"],
+                       footerInfo:
+                       "Please have a look to explore the projects, their base setup, impact post adding the dependencies, their respective archives/IPAs etc.")
     }
     
     private let tronFileManager: TronFileManaging

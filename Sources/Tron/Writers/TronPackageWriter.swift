@@ -27,12 +27,12 @@ struct TronProjectAssistant: TronProjectAssisting {
         try packages.forEach { (package) in
             switch package {
             case .local(let localPackage):
-                logger.logInfo("Adding Local Package: \(localPackage.productName)...")
+                logger.logInfo("\tAdding Local Package: \(localPackage) ...")
                 _ = try pbjProject.addLocalSwiftPackage(path: .init(localPackage.absolutePath),
                                                         productName: localPackage.productName,
                                                         targetName: "Template")
             case .remote(let remotePackage):
-                logger.logInfo("Adding Remote Package: \(remotePackage.productName)...")
+                logger.logInfo("\tAdding Remote Package: \(remotePackage) ...")
                 _ = try pbjProject.addSwiftPackage(repositoryURL: remotePackage.repositoryURL,
                                                    productName: remotePackage.productName,
                                                    versionRequirement: .exact(remotePackage.exactVersion),
