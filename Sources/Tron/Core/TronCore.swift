@@ -14,13 +14,15 @@ final class TronCore {
          urlProvider: TronURLProviding = TronURLProvider(),
          logger: TronLogging = TronLogger(),
          packageWriter: SwiftPackageWriting = SwiftPackageWriter(),
-         podFileWriter: PodFileWriting = PodFileWriter()) {
+         podFileWriter: PodFileWriting = PodFileWriter(),
+         projTargetVersionWriter: PBXProjTargetVersionWriting = PBXProjTargetVersionWriter()) {
         self.tronFileManager = tronFileManager
         self.shell = shell
         self.urlProvider = urlProvider
         self.logger = logger
         self.packageWriter = packageWriter
         self.podFileWriter = podFileWriter
+        self.projTargetVersionWriter = projTargetVersionWriter
     }
     
     func start(with config: TronConfig) {
@@ -53,6 +55,16 @@ final class TronCore {
             
             logger.logInfo("Template Project Directory URL: \(urlProvider.templateDestinationDirectoryURL.absoluteString)")
             logger.logInfo("Template With Dependencies Project Directory URL: \(urlProvider.templateWithDepsDestinationDirectoryURL.absoluteString)")
+            
+            // Updating target version
+            try [urlProvider.templateProjectURL,
+             urlProvider.templateWithDepsProjectURL].forEach {
+                logger.logInfo("🚀 Configuring Minimum Deployment Target")
+                try projTargetVersionWriter.configure(projectAtURL: $0,
+                                                  for: config.targetOS,
+                                                  targetVersion: config.minDeploymentTarget)
+             }
+            
             
             
             try packageWriter.add(packages: config.packages,
@@ -109,6 +121,7 @@ final class TronCore {
     private let logger: TronLogging
     private let packageWriter: SwiftPackageWriting
     private let podFileWriter: PodFileWriting
+    private let projTargetVersionWriter: PBXProjTargetVersionWriting
     
     private lazy var byteCountFormatter: ByteCountFormatter = {
         let formatter = ByteCountFormatter()

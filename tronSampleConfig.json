@@ -22,7 +22,7 @@
     "architecture": "arm64"
   },
   "targetOS": "iOS",
-  "minDeploymentTarget": "11.0",
+  "minDeploymentTarget": "12.3",
   "pods": [
       {
           "name": "Kingfisher",

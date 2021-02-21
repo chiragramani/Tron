@@ -11,6 +11,7 @@ protocol TronURLProviding {
     func templateFolderURL(targetOS: TargetOS) -> URL
     var templateDestinationDirectoryURL: URL { get }
     var templateWithDepsDestinationDirectoryURL: URL { get }
+    var templateProjectURL: URL { get }
     var templateWithDepsProjectURL: URL { get }
     var templateIPAURL: URL { get }
     var templateWithDepsIPAURL: URL { get }
@@ -38,7 +39,7 @@ final class TronURLProvider: TronURLProviding {
     
     lazy var templateWithDepsDestinationDirectoryURL = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString,
                                                                                                        isDirectory: true)
-    
+    lazy var templateProjectURL = templateDestinationDirectoryURL.appendingPathComponent("Template.xcodeproj")
     lazy var templateWithDepsProjectURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent("Template.xcodeproj")
     lazy var templateIPAURL = templateDestinationDirectoryURL.appendingPathComponent("Template.ipa")
     lazy var templateWithDepsIPAURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent("Template.ipa")
