@@ -19,6 +19,8 @@ protocol TronFileManaging {
     func files(inDirectory directoryURL: URL) throws -> [File]
     
     func formattedFileSizeRepresentation(forBytes bytes: Int64) -> String
+    
+    func sizeOfFolder(at url: URL) throws -> Int64
 }
 
 enum TronFileManagerError: Error {
@@ -91,15 +93,22 @@ struct TronFileManager: TronFileManaging {
     }
     
     func files(inDirectory directoryURL: URL) throws -> [File]  {
-        let urls = try FileManager.default.contentsOfDirectory(at: directoryURL,
+        let urls = try fileManager.contentsOfDirectory(at: directoryURL,
                                                                includingPropertiesForKeys: [.fileSizeKey])
         return try urls.map { url in
-            let fileSize = try FileManager.default.attributesOfItem(atPath: url.path)[.size] as! Int64
+            let fileSize = try fileManager.attributesOfItem(atPath: url.path)[.size] as! Int64
             return File(name: url.lastPathComponent,
                         fileSizeInBytes: fileSize,
                         formattedFileSize: byteCountFormatter.string(fromByteCount: fileSize))
         }
     }
+    
+    
+    func sizeOfFolder(at url: URL) throws -> Int64 {
+        Int64((try url.sizeOnDisk() ?? 0))
+    }
+    
+    
     
     func formattedFileSizeRepresentation(forBytes bytes: Int64) -> String {
         byteCountFormatter.string(fromByteCount: bytes)
@@ -110,15 +119,14 @@ struct TronFileManager: TronFileManaging {
     private let fileManager: FileManager
     
     private func copyFiles(pathFromBundle : String, pathDestDocs: String) throws {
-        let fileManagerIs = FileManager.default
         do {
-            try fileManagerIs.copyItem(atPath: pathFromBundle,
+            try fileManager.copyItem(atPath: pathFromBundle,
                                        toPath: pathDestDocs)
         }
     }
     
     private func sizeOfFileURL(_ url: URL) throws -> UInt64 {
-        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+        let attributes = try fileManager.attributesOfItem(atPath: url.path)
         let fileSize = attributes[FileAttributeKey.size] as! UInt64
         return fileSize
     }
@@ -143,4 +151,36 @@ extension TronFileManagerError: LocalizedError {
         }
     }
     
+}
+
+private extension URL {
+    /// check if the URL is a directory and if it is reachable
+    func isDirectoryAndReachable() throws -> Bool {
+        guard try resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true else {
+            return false
+        }
+        return try checkResourceIsReachable()
+    }
+
+    func directoryTotalSize(includingSubfolders: Bool = false) throws -> Int? {
+        guard try isDirectoryAndReachable() else { return nil }
+        if includingSubfolders {
+            guard
+                let urls = FileManager.default.enumerator(at: self, includingPropertiesForKeys: nil)?.allObjects as? [URL] else { return nil }
+            return try urls.lazy.reduce(0) {
+                (try $1.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) + $0
+            }
+        }
+        return try FileManager.default.contentsOfDirectory(at: self, includingPropertiesForKeys: nil).lazy.reduce(0) {
+            (try $1.resourceValues(forKeys: [.fileSizeKey])
+                    .totalFileAllocatedSize ?? 0) + $0
+        }
+    }
+
+    /// returns the directory total size on disk
+    func sizeOnDisk() throws -> Int? {
+        guard let size = try directoryTotalSize(includingSubfolders: true) else { return nil }
+        return size
+    }
+    private static let byteCountFormatter = ByteCountFormatter()
 }

@@ -102,17 +102,22 @@ final class TronCore {
             let ipaSizeDifference = try tronFileManager.fileSizeDifferenceBetween(url1: urlProvider.templateIPAURL,
                                                                                           url2: urlProvider.templateWithDepsIPAURL)
             
-            logger.logSuccess("Approximate contribution is: \(ipaSizeDifference.differenceInBytes) bytes = \(ipaSizeDifference.formattedDifference)")
+            logger.logSuccess("Approximate download size contribution is: \(ipaSizeDifference.differenceInBytes) bytes = \(ipaSizeDifference.formattedDifference)")
             
-            
-            
-            logger.logInfo("🚀 The temporary directories are the following:\n1. Base project:  \(urlProvider.templateDestinationDirectoryURL)\n2. Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL)\nPlease have a look to explore the projects, their base setup, impact post adding the dependencies, their respective archives/IPAs etc.")
+            let archiveSizeDifference = (try tronFileManager.sizeOfFolder(at: urlProvider.templateWithDepsAppURL)) - (try tronFileManager.sizeOfFolder(at: urlProvider.templateAppURL))
             
             let differences = try frameworkDifferencesProvider.differencesBetween(source: urlProvider.templateFrameworksDirectoryURL, destination: urlProvider.templatWithDepsFrameworksDirectoryURL)
-            logger.logInfo("Number of dynamic libraries introduced: \(differences.files.count)\nNet contribution: \(differences.netSizeContribution) bytes ~= \(differences.netSizeContributionFormatted)")
+            logger.logInfo("Number of dynamic libraries introduced: \(differences.files.count)\nNet contribution of the libSwift dylibs: \(differences.netSizeContribution) bytes ~= \(differences.netSizeContributionFormatted)")
             differences.files.forEach {
                 logger.logInfo("\t \($0.name) \($0.fileSizeInBytes) bytes ~= \($0.formattedFileSize)")
             }
+            
+            logger.logSuccess("Approximate install size contribution including added dylibs is: \(archiveSizeDifference) bytes = \(tronFileManager.formattedFileSizeRepresentation(forBytes: archiveSizeDifference))")
+            let effectiveDiffernece = UInt64(archiveSizeDifference) - differences.netSizeContribution
+            logger.logSuccess("Approximate install size contribution without considering libSwift dylibs(iOS 12 and above) is: \(effectiveDiffernece) bytes = \(tronFileManager.formattedFileSizeRepresentation(forBytes: Int64(effectiveDiffernece)))")
+            
+            
+            logger.logInfo("🚀 The temporary directories are the following:\n1. Base project:  \(urlProvider.templateDestinationDirectoryURL)\n2. Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL)\nPlease have a look to explore the projects, their base setup, impact post adding the dependencies, their respective archives/IPAs etc.")
             
             logger.logSuccess("All done 🎉")
         } catch let error {
