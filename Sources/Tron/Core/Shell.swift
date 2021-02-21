@@ -27,17 +27,11 @@ struct ShellCommand {
     
     static func archiveProject(_ projectURL: URL,
                                isWorkSpace: Bool,
-                               linkerArguments: LinkerArguments,
-                               targetOS: TargetOS,
-                               minDeploymentTarget: String) -> String {
+                               linkerArguments: LinkerArguments) -> String {
         let baseCommand = isWorkSpace ? archiveWorkspaceCommand : archiveCommand
         let archiveOverrideCommand = baseCommand
             .replacingOccurrences(of: ShellCommand.linkerArguments,
                                   with: linkerArguments.xcodeLinkerArguments)
-            .replacingOccurrences(of: platformArgument,
-                                  with: targetOS.xcodePlatformArgument)
-            .replacingOccurrences(of: platformArgumentValue,
-                                  with: minDeploymentTarget)
         return "cd \(projectURL.path)/ && \(archiveOverrideCommand)"
     }
     
@@ -55,13 +49,11 @@ struct ShellCommand {
     
     // MARK: Private
     
-    private static let platformArgument = "{platformArgument}"
-    private static let platformArgumentValue = "{platformArgumentValue}"
     private static let linkerArguments = "{linkerArguments}"
     
-    private static let archiveCommand = "xcodebuild -project Template.xcodeproj -scheme Template -configuration Release clean archive -archivePath Template.xcarchive \(linkerArguments) \(platformArgument)=\(platformArgumentValue)"
+    private static let archiveCommand = "xcodebuild -project Template.xcodeproj -scheme Template -configuration Release clean archive -archivePath Template.xcarchive \(linkerArguments)"
     
-    private static let archiveWorkspaceCommand = "xcodebuild -workspace Template.xcworkspace -scheme Template -configuration Release clean archive -archivePath Template.xcarchive \(linkerArguments) \(platformArgument)=\(platformArgumentValue)"
+    private static let archiveWorkspaceCommand = "xcodebuild -workspace Template.xcworkspace -scheme Template -configuration Release clean archive -archivePath Template.xcarchive \(linkerArguments)"
     
     private static let exportIPACommand = "xcodebuild -exportArchive -archivePath Template.xcarchive -exportPath . Template -exportOptionsPlist ExportOptions.plist"
     
@@ -81,14 +73,5 @@ private extension LinkerArguments {
                 codeSigningAllowedArgument,
                 codeSignEntitlementsArgument,
                 architecturesArgument].joined(separator: " ")
-    }
-}
-
-private extension TargetOS {
-    var xcodePlatformArgument: String {
-        switch self {
-        case .iOS:
-            return "iOSVersion"
-        }
     }
 }

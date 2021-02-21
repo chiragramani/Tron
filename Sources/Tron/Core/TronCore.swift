@@ -79,9 +79,7 @@ final class TronCore {
             logger.logInfo("🚀 Generating Template Archive...")
             shell.execute(ShellCommand.archiveProject(urlProvider.templateDestinationDirectoryURL,
                                                       isWorkSpace: false,
-                                                      linkerArguments: config.linkerArguments,
-                                                      targetOS: config.targetOS,
-                                                      minDeploymentTarget: config.minDeploymentTarget))
+                                                      linkerArguments: config.linkerArguments))
             
             logger.logInfo("🚀 Generating Template Archive IPA...")
             shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
@@ -91,9 +89,7 @@ final class TronCore {
             logger.logInfo("🚀 Generating Template with Dependencies added...")
             shell.execute(ShellCommand.archiveProject(urlProvider.templateWithDepsDestinationDirectoryURL,
                                                       isWorkSpace: !config.pods.isEmpty,
-                                                      linkerArguments: config.linkerArguments,
-                                                      targetOS: config.targetOS,
-                                                      minDeploymentTarget: config.minDeploymentTarget))
+                                                      linkerArguments: config.linkerArguments))
             
             logger.logInfo("🚀 Generating Template with Dependencies IPA...")
             shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL))
