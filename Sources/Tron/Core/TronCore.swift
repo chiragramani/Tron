@@ -5,7 +5,6 @@
 //  Created by Chirag Ramani on 08/02/21.
 //
 
-import XcodeProj
 import Foundation
 
 final class TronCore {
