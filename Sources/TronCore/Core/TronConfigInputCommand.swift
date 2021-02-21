@@ -31,7 +31,7 @@ public struct TronConfigInputCommand: ParsableCommand {
     }
     
     public func run() throws {
-        Shell.isVerbose = verbose
+        ShellImpl.isVerbose = verbose
         TronCore().start(with: config)
     }
 }

@@ -32,7 +32,7 @@ struct PodFileWriter: PodFileWriting {
     private let shell: Shell
     private let logger: TronLogging
     
-    init(shell: Shell = Shell(),
+    init(shell: Shell = ShellImpl(),
          logger: TronLogging = TronLogger()) {
         self.shell = shell
         self.logger = logger

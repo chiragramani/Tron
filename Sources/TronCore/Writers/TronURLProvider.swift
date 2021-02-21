@@ -24,8 +24,10 @@ protocol TronURLProviding {
 
 final class TronURLProvider: TronURLProviding {
     
-    init(fileManager: FileManager = .default) {
+    init(fileManager: FileManager = .default,
+         uuidGenerator: UUIDGenerating = UUIDGenerator()) {
         self.fileManager = fileManager
+        self.uuidGenerator = uuidGenerator
     }
     
     func templateFolderURL(targetOS: TargetOS) -> URL {
@@ -35,10 +37,10 @@ final class TronURLProvider: TronURLProviding {
         return URL(fileURLWithPath: templateProjectPath!).deletingLastPathComponent()
     }
     
-    lazy var templateDestinationDirectoryURL = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString,
+    lazy var templateDestinationDirectoryURL = fileManager.temporaryDirectory.appendingPathComponent(uuidGenerator.generateUUID(),
                                                                                                      isDirectory: true)
     
-    lazy var templateWithDepsDestinationDirectoryURL = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString,
+    lazy var templateWithDepsDestinationDirectoryURL = fileManager.temporaryDirectory.appendingPathComponent(uuidGenerator.generateUUID(),
                                                                                                              isDirectory: true)
     lazy var templateProjectURL = templateDestinationDirectoryURL.appendingPathComponent(Constants.templateXcodeProject)
     lazy var templateWithDepsProjectURL = templateWithDepsDestinationDirectoryURL.appendingPathComponent(Constants.templateXcodeProject)
@@ -58,6 +60,7 @@ final class TronURLProvider: TronURLProviding {
     // MARK: Private
     
     private let fileManager: FileManager
+    private let uuidGenerator: UUIDGenerating
     
     private enum Constants {
         static let template = "Template"

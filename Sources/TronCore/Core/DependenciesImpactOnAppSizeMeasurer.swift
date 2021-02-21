@@ -14,7 +14,7 @@ protocol DependenciesImpactOnAppSizeMeasuring {
 struct DependenciesImpactOnAppSizeMeasurer: DependenciesImpactOnAppSizeMeasuring {
     
     init(tronFileManager: TronFileManaging = TronFileManager(),
-         shell: Shell = Shell(),
+         shell: Shell = ShellImpl(),
          urlProvider: TronURLProviding = TronURLProvider(),
          logger: TronLogging = TronLogger(),
          packageWriter: SwiftPackageWriting = SwiftPackageWriter(),

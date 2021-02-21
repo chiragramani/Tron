@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct Shell {
+protocol Shell {
+    func execute(_ command: String)
+}
+
+struct ShellImpl: Shell {
     static var isVerbose = false
     
     init(logger: TronLogging = TronLogger()) {
@@ -17,7 +21,7 @@ struct Shell {
     func execute(_ command: String) {
         Process().launchBash(withCommand: command,
                              logger: logger,
-                             isVerbose: Shell.isVerbose)
+                             isVerbose: ShellImpl.isVerbose)
     }
     
     // MARK: Private
