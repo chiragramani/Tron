@@ -10,14 +10,16 @@ import Foundation
 struct TronCore {
     
     init(logger: TronLogging = TronLogger(),
+         tronConfigTransformer: TronConfigTransforming = TronConfigTransformer(),
          appSizeImpactMeasurer: DependenciesImpactOnAppSizeMeasuring = DependenciesImpactOnAppSizeMeasurer()) {
         self.logger = logger
+        self.tronConfigTransformer = tronConfigTransformer
         self.appSizeImpactMeasurer = appSizeImpactMeasurer
     }
     
     func start(with config: TronConfig) {
         do {
-            let config = try TronConfigTransformer().transform(config)
+            let config = try tronConfigTransformer.transform(config)
             startCore(config)
         } catch TronConfigTransformerError.noDependenciesFound {
             logger.logError("No valid dependencies found.")
@@ -30,6 +32,7 @@ struct TronCore {
     // MARK: Private
     
     private let logger: TronLogging
+    private let tronConfigTransformer: TronConfigTransforming
     private let appSizeImpactMeasurer: DependenciesImpactOnAppSizeMeasuring
     
     private func startCore(_ config: TronConfig) {

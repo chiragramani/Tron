@@ -11,7 +11,11 @@ enum TronConfigTransformerError: Error {
     case noDependenciesFound
 }
 
-struct TronConfigTransformer {
+protocol TronConfigTransforming {
+    func transform(_ config: TronConfig) throws -> TronConfig
+}
+
+struct TronConfigTransformer: TronConfigTransforming {
     func transform(_ config: TronConfig) throws -> TronConfig {
         let packages = config.packages.filter { $0.isValid }
         let pods = config.pods.filter { $0.isValid }
