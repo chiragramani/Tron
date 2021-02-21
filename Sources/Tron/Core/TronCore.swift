@@ -15,7 +15,8 @@ final class TronCore {
          logger: TronLogging = TronLogger(),
          packageWriter: SwiftPackageWriting = SwiftPackageWriter(),
          podFileWriter: PodFileWriting = PodFileWriter(),
-         projTargetVersionWriter: PBXProjTargetVersionWriting = PBXProjTargetVersionWriter()) {
+         projTargetVersionWriter: PBXProjTargetVersionWriting = PBXProjTargetVersionWriter(),
+         frameworkDifferencesProvider: FrameworkDifferencesProviding = FrameworkDifferencesProvider()) {
         self.tronFileManager = tronFileManager
         self.shell = shell
         self.urlProvider = urlProvider
@@ -23,6 +24,7 @@ final class TronCore {
         self.packageWriter = packageWriter
         self.podFileWriter = podFileWriter
         self.projTargetVersionWriter = projTargetVersionWriter
+        self.frameworkDifferencesProvider = frameworkDifferencesProvider
     }
     
     func start(with config: TronConfig) {
@@ -102,7 +104,15 @@ final class TronCore {
             
             logger.logSuccess("Approximate contribution is: \(ipaSizeDifference.differenceInBytes) bytes = \(ipaSizeDifference.formattedDifference)")
             
+            
+            
             logger.logInfo("🚀 The temporary directories are the following:\n1. Base project:  \(urlProvider.templateDestinationDirectoryURL)\n2. Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL)\nPlease have a look to explore the projects, their base setup, impact post adding the dependencies, their respective archives/IPAs etc.")
+            
+            let differences = try frameworkDifferencesProvider.differencesBetween(source: urlProvider.templateFrameworksDirectoryURL, destination: urlProvider.templatWithDepsFrameworksDirectoryURL)
+            logger.logInfo("Number of dynamic libraries introduced: \(differences.files.count)\nNet contribution: \(differences.netSizeContribution) bytes ~= \(differences.netSizeContributionFormatted)")
+            differences.files.forEach {
+                logger.logInfo("\t \($0.name) \($0.fileSizeInBytes) bytes ~= \($0.formattedFileSize)")
+            }
             
             logger.logSuccess("All done 🎉")
         } catch let error {
@@ -117,6 +127,7 @@ final class TronCore {
     private let packageWriter: SwiftPackageWriting
     private let podFileWriter: PodFileWriting
     private let projTargetVersionWriter: PBXProjTargetVersionWriting
+    private let frameworkDifferencesProvider: FrameworkDifferencesProviding
 }
 
 

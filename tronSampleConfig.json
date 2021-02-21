@@ -2,9 +2,9 @@
   "packages": [
     {
       "remote": {
-        "productName": "Alamofire",
-        "exactVersion": "5.2.0",
-        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        "productName": "Kingfisher",
+        "exactVersion": "6.1.1",
+        "repositoryURL": "https://github.com/onevcat/Kingfisher",
       },
     },
     {
@@ -22,11 +22,8 @@
     "architecture": "arm64"
   },
   "targetOS": "iOS",
-  "minDeploymentTarget": "12.3",
+  "minDeploymentTarget": "11.3",
   "pods": [
-      {
-          "name": "Kingfisher",
-          "version": "6.1.0"
-      }
+      
   ]
 }

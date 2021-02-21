@@ -17,6 +17,8 @@ protocol TronFileManaging {
                                    url2: URL) throws -> FileSizeDifference
     
     func files(inDirectory directoryURL: URL) throws -> [File]
+    
+    func formattedFileSizeRepresentation(forBytes bytes: Int64) -> String
 }
 
 enum TronFileManagerError: Error {
@@ -29,10 +31,11 @@ enum TronFileManagerError: Error {
                             systemError: Error)
 }
 
-struct File {
+struct File: Hashable {
     let name: String
     let fileSizeInBytes: Int64
     let formattedFileSize: String
+    
 }
 
 struct FileSizeDifference {
@@ -96,6 +99,10 @@ struct TronFileManager: TronFileManaging {
                         fileSizeInBytes: fileSize,
                         formattedFileSize: byteCountFormatter.string(fromByteCount: fileSize))
         }
+    }
+    
+    func formattedFileSizeRepresentation(forBytes bytes: Int64) -> String {
+        byteCountFormatter.string(fromByteCount: bytes)
     }
     
     // MARK: Private
