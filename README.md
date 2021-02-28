@@ -40,13 +40,12 @@ Please note: your application might be adding either all or a few of the above d
 
 ## Methodology
 
-The methodology is highly inspired from [Google Cocoapods-size](https://github.com/google/cocoapods-size) and does the following:
+The methodology is highly inspired by [Google Cocoapods-size](https://github.com/google/cocoapods-size)and does the following:
 1. Archive a baseline app as ARM64 with no bitcode.
 2. Add the required dependencies.
 3. Archive a baseline app as ARM64 with no bitcode.
 4. Compute the difference and report the respective contribution.
-
-The size reported by Testflight is very much close (within a range of 3%) to the result reported by following the above approach. 
+The size reported by Testflight is very much close (within a range of 3%) to the result calculated by following the above approach.
 
 ## Libraries used
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
