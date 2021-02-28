@@ -31,6 +31,7 @@ Well, we are adding a new member(dependency) to our application that is going to
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
 
 ## Recommendations
+* [How Uber Deals with Large iOS App Size](https://eng.uber.com/how-uber-deals-with-large-ios-app-size/) The App Size Problem faced by Uber and the amazing engineering journey that resulted in some really cool code size savings.
 * If you are interested in knowing the impact of every change as you make it, or if you are intrested in getting an accurate app size report on every diff or every release build, with a very  detailed module by module Binary analysis breakdown, [Emerge](https://www.emergetools.com) is worth exploring. [How 7 iOS Apps Could Save You 500MB of Storage](https://medium.com/swlh/how-7-ios-apps-could-save-you-500mb-of-storage-a828782c973e)
 
 ## Report any issues
