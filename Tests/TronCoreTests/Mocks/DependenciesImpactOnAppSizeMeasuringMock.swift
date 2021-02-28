@@ -13,7 +13,7 @@ final class DependenciesImpactOnAppSizeMeasuringMock: DependenciesImpactOnAppSiz
     var determineDepedenciesImpactOnAppSizeCallCount = 0
     var determineDepedenciesImpactOnAppSizeHandler: (() throws -> ())?
     
-    func determineDepedenciesImpactOnAppSize(givenConfig config: TronConfig) throws {
+    func determineDepedenciesImpactOnAppSize(givenConfig config: TronValidatedConfig) throws {
         determineDepedenciesImpactOnAppSizeCallCount += 1
         try determineDepedenciesImpactOnAppSizeHandler?()
     }

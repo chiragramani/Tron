@@ -11,9 +11,9 @@ import Foundation
 final class TronConfigTransformingMock: TronConfigTransforming {
     
     var transformCallCount = 0
-    var transformHandler: ((TronConfig) throws -> TronConfig)!
+    var transformHandler: ((TronConfig) throws -> TronValidatedConfig)!
     
-    func transform(_ config: TronConfig) throws -> TronConfig {
+    func transform(_ config: TronConfig) throws -> TronValidatedConfig {
         transformCallCount += 1
         return try transformHandler(config)
     }

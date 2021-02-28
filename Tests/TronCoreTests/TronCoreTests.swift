@@ -24,7 +24,7 @@ final class TronCoreTests: XCTestCase {
     
     func test_start_validConfig() {
         // given
-        tronConfigTransformer.transformHandler = { _ in self.config }
+        tronConfigTransformer.transformHandler = { _ in self.validatedConfig }
         dependenciesImpactOnAppSizeMeasurer.determineDepedenciesImpactOnAppSizeHandler = { }
         tronLogger.logSuccessHandler = { XCTAssertEqual($0, "All done 🎉") }
         XCTAssertEqual(tronLogger.logSuccessCallCount, 0)
@@ -76,7 +76,7 @@ final class TronCoreTests: XCTestCase {
     
     func test_start_appSizeAnalysisError() {
         // given
-        tronConfigTransformer.transformHandler = { _ in self.config }
+        tronConfigTransformer.transformHandler = { _ in self.validatedConfig }
         dependenciesImpactOnAppSizeMeasurer.determineDepedenciesImpactOnAppSizeHandler = {
             throw TestError.other
         }
@@ -94,6 +94,18 @@ final class TronCoreTests: XCTestCase {
         XCTAssertEqual(tronConfigTransformer.transformCallCount, 1)
         XCTAssertEqual(dependenciesImpactOnAppSizeMeasurer.determineDepedenciesImpactOnAppSizeCallCount, 1)
     }
+    
+    private let validatedConfig = TronValidatedConfig(packages: [],
+                                                      linkerArguments: .init(codeSignIdentity: "",
+                                                                             isCodeSigningRequired: false,
+                                                                             isCodeSigningAllowed: false,
+                                                                             codeSignEntitlements: "",
+                                                                             architecture: ""),
+                                                      targetOS: .iOS,
+                                                      pods: [],
+                                                      minDeploymentTarget: "14.3",
+                                                      shouldPerformDownloadSizeAnalysis: false,
+                                                      embedsSwiftRuntime: false)
     
     private let config = TronConfig(packages: [],
                                     linkerArguments: .init(codeSignIdentity: "",

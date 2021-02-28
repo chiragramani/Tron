@@ -35,7 +35,7 @@ struct TronCore {
     private let tronConfigTransformer: TronConfigTransforming
     private let appSizeImpactMeasurer: DependenciesImpactOnAppSizeMeasuring
     
-    private func startCore(_ config: TronConfig) {
+    private func startCore(_ config: TronValidatedConfig) {
         do {
             try appSizeImpactMeasurer.determineDepedenciesImpactOnAppSize(givenConfig: config)
             logger.logSuccess("All done 🎉")
