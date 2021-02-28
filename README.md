@@ -52,8 +52,6 @@ As we can see, 9 libswift dynamic libraries are introduced but none of them are 
 
 Please note: your application might be adding either all or a few of the above dylibs already even before the dependency is being added, so please consider the existing state. E.g. if you are importing CoreLocation already in your application- then libswiftCoreLocation.dylib will not be a new addition, and hence its contribution of ~=730 KB can be respectively reduced.
 
-### Why do we have to mention minimum deployment target version in the config file ? (ABI Stability)
-
 ## Methodology
 
 The methodology is highly inspired by [Google Cocoapods-size](https://github.com/google/cocoapods-size)and does the following:
