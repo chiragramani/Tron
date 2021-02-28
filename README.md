@@ -16,6 +16,15 @@ Well, we are adding a new member(dependency) to our application that is going to
 2. It helps us to reason how similar dependencies stand against each other with their respective contributions to binary size.
 3. Peter Reinhardt has authored an amazing article that talks about the "Effect of Mobile App Size on Downloads". Please refer to the [article](https://www.google.com/search?client=safari&rls=en&q=Effect+of+Mobile+App+Size+on+Downloads&ie=UTF-8&oe=UTF-8) for more details about the impact on installation rate etc.
 
+## Installation
+
+```
+$ git clone https://github.com/chiragramani/Tron
+$ cd Tron
+$ swift build -c release
+$ .build/release/Tron <path_to_tron_config_json_file>
+```
+
 ## System Requirements
 
 * Swift 5.3 or later
