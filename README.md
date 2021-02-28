@@ -30,8 +30,8 @@ Well, we are adding a new member(dependency) to our application that is going to
 2. Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully. 
 3. Post the above, please update the ExportOptions.plist with your teamID and other fields as per your use-case.
 
-## Used libraries
-[tuist/XcodeProj](https://github.com/tuist/XcodeProj)
+## Libraries used
+[tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
 
 ## Report any issues
 
