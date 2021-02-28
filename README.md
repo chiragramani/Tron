@@ -25,7 +25,7 @@ $ swift run Tron <path_to_tron_config_json_file> // follow the steps mentioned u
 ## Run
 
 1. Update tronSampleConfig.json that has information about the swift packages as well as the pods.
-2. Then run ```**swift run Tron <path_to_tron_config_json_file>```
+2. Then run ```swift run Tron <path_to_tron_config_json_file>```
 
 <img width="1529" alt="Screenshot 2021-03-01 at 3 59 56 AM" src="https://user-images.githubusercontent.com/11925399/109435880-b51dee80-7a42-11eb-8cea-b9ce2d1f63de.png">
 
