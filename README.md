@@ -17,13 +17,31 @@ Well, we are adding a new member(dependency) to our application that is going to
 3. Peter Reinhardt has authored an amazing [article](https://segment.com/blog/mobile-app-size-effect-on-downloads/) that talks about the "Effect of Mobile App Size on Downloads". Please refer to the article for more details about impact on installation rate etc. (Highly recommended).
 
 
-## Requirements
+## System Requirements
 
-- Xcode 12
-- If measuring pods contribution, then cocoapods should be installed.
+* Swift 5.3 or later
+* Xcode 12.0 or later
+* MacOS 10.15.4 or later
+* Support is included for the Swift Package Manager
+* If measuring pods contribution, then cocoapods should be installed.
 
 **Please note:**
 1. Currently, the above works only with Xcode 12.
 2. Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully. 
 3. Post the above, please update the ExportOptions.plist with your teamID and other fields as per your use-case.
+
+## Libraries used
+[tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
+
+## Report any issues
+
+If you run into any problems, please file a git issue. Please include:
+
+* The OS version (e.g. macOS 10.15.6)
+* The Swift version installed on your machine (from `swift --version`)
+* The Xcode version
+* The specific release version of this source code (you can use `git tag` to get a list of all the release versions or `git log` to get a specific commit sha)
+* Any local changes on your machine
+* Verbose logs printed in the console when the operations were executed
+
 ---
