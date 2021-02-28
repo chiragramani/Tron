@@ -54,7 +54,7 @@ Please note: your application might be adding either all or a few of the above d
 
 ## Methodology
 
-The methodology is highly inspired by [Google Cocoapods-size](https://github.com/google/cocoapods-size)and does the following:
+The methodology is highly inspired by [Google Cocoapods-size](https://github.com/google/cocoapods-size) and does the following:
 1. Archive a baseline app as ARM64 with no bitcode.
 2. Add the required dependencies.
 3. Archive a baseline app as ARM64 with no bitcode.
