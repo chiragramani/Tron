@@ -3,7 +3,7 @@
  <img src="https://github.com/chiragramani/Tron/blob/main/tron.png?raw=true">
 </p>
 
-Tron is command-line Swift tool that helps with providing an approximate download and install size contribution of a set of swift package(s) and cocoapod(s).
+Tron is a simple command-line Swift tool that provides an approximate download and installation size contribution of a set of Swift package(s) and Cocoapod(s).
 
 ## Why measuring contribution of a dependency is important?
 
@@ -18,13 +18,14 @@ Well, we are adding a new member(dependency) to our application that is going to
 $ git clone https://github.com/chiragramani/Tron
 $ cd Tron
 $ swift build -c release
-$ .build/release/Tron <path_to_tron_config_json_file>
+$ cd .build/release
+$ swift run Tron <path_to_tron_config_json_file> // follow the steps mentioned under "Run" below.
 ```
 
 ## Run
 
-1. Update tronSampleConfig.json that has information about the swift packages as well as the cocoapods. 
-2. Then run **swift run Tron tronSampleConfig.json**
+1. Update tronSampleConfig.json that has information about the swift packages as well as the pods.
+2. Then run ```**swift run Tron <path_to_tron_config_json_file>```
 
 <img width="1529" alt="Screenshot 2021-03-01 at 3 59 56 AM" src="https://user-images.githubusercontent.com/11925399/109435880-b51dee80-7a42-11eb-8cea-b9ce2d1f63de.png">
 
