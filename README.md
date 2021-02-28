@@ -62,7 +62,7 @@ The methodology is highly inspired by [Google Cocoapods-size](https://github.com
 3. Archive a baseline app as ARM64 with no bitcode.
 4. Compute the difference and report the respective contribution.
 
-The size reported by Testflight is very much close (within a range of 3%) to the result calculated by following the above approach. The above approach provides a decent ballpark as far as the local analysis is concerned. A lot of things happen once the ipa is uploaded - App Store servers will be taking bitcode and app thinning into account as per your application's configuration. Post appplying multiple optimizations, the servers also apply the necessary encryption with a lot of other steps before delivering the app to the user. Thus, the difference between the size that user sees and the size that this tool reports will be different.
+The size reported by Testflight is very much close (within a range of 3%) to the result calculated by following the above approach. The above approach provides a decent ballpark as far as the local analysis is concerned. A lot of things happen once the IPA is uploaded - App Store servers will be taking bitcode and app thinning into account as per your application's configuration. Post applying multiple optimizations, the servers also apply the necessary encryption with a lot of other steps before delivering the app to the user. Thus, the difference between the size that the user sees and the size that this tool reports will be different.
 
 ## Libraries used
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
