@@ -24,9 +24,9 @@ Well, we are adding a new member(dependency) to our application that is going to
 * Xcode 12.0 or later
 * If measuring pods contribution, then cocoapods should be installed.
 
-**Please note:**
-* Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully. 
-* Post the above, please update the ExportOptions.plist with your teamID and other fields as per your use-case.
+* If measuring impact on the download size,
+    * Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully.
+    * Post the above, please update the ExportOptions.plist with your teamID and other fields as per your use-case.
 
 ## Libraries used
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
