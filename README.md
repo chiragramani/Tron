@@ -30,6 +30,9 @@ Well, we are adding a new member(dependency) to our application that is going to
 ## Libraries used
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
 
+## Recommendations
+* If you are interested in knowing the impact of every change as you make it, or if you are intrested in getting an accurate app size report on every diff or every release build, with a very  detailed module by module Binary analysis breakdown, [Emerge](https://www.emergetools.com) is worth exploring.
+
 ## Report any issues
 
 If you run into any problems, please file a git issue. Please include:
