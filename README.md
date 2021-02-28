@@ -32,7 +32,7 @@ Well, we are adding a new member(dependency) to our application that is going to
 
 ## Used libraries
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj)
----
+
 ## Report any issues
 
 If you run into any problems, please file a git issue. Please include:
@@ -43,3 +43,5 @@ If you run into any problems, please file a git issue. Please include:
 * The specific release version of this source code (you can use `git tag` to get a list of all the release versions or `git log` to get a specific commit sha)
 * Any local changes on your machine
 * Verbose logs printed in the console when the operations were executed
+
+---
