@@ -50,7 +50,7 @@ For example:
 ![Screenshot 2021-03-01 at 3 08 46 AM](https://user-images.githubusercontent.com/11925399/109434838-1fcc2b80-7a3d-11eb-93ca-898a41dfac78.jpg)
 As we can see, 9 libswift dynamic libraries are introduced but none of them are added when the deployment target is iOS 12.2 or above. 
 
-Please note: your application might be adding either all or a few of the above dylibs already even before the dependency is being added, so please consider the existing state. E.g. if you are importing CoreLocation already in your application- then libswiftCoreLocation.dylib will not be a new addition, and hence its contribution of ~=730 KB can be respectively reduced.
+Please note: your application might be adding either all or a few of the above dylibs already even before the dependency is being added, so please consider the existing state. E.g. if you are importing CoreLocation already in your application- then libswiftCoreLocation.dylib will not be a new addition, and hence its contribution of ~=730 KB can be respectively subtracted from the net reported dylibs contribution.
 
 ## Methodology
 
