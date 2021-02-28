@@ -36,7 +36,7 @@ struct DependenciesImpactOnAppSizeMeasurer: DependenciesImpactOnAppSizeMeasuring
         defer { logGeneratedProjectsInfo() }
         try addDependencies(config)
         try generateProducts(config)
-        analyseGeneratedProducts(config)
+        try analyseGeneratedProducts(config)
     }
     
     // MARK: Private
@@ -55,29 +55,29 @@ struct DependenciesImpactOnAppSizeMeasurer: DependenciesImpactOnAppSizeMeasuring
         
         // Copy it in two different directories - one for default and the other for adding dependencies.
         try tronFileManager.copyFolders(to: urlProvider.templateDestinationDirectoryURL,
-                                         from: urlProvider.templateFolderURL(targetOS: config.targetOS))
+                                        from: urlProvider.templateFolderURL(targetOS: config.targetOS))
         
         try tronFileManager.copyFolders(to: urlProvider.templateWithDepsDestinationDirectoryURL,
-                                         from: urlProvider.templateFolderURL(targetOS: config.targetOS))
+                                        from: urlProvider.templateFolderURL(targetOS: config.targetOS))
         
         // Updating target version
         logger.logInfo("🚀 Configuring Minimum Deployment Target: \(config.targetOS) \(config.minDeploymentTarget)")
         try [urlProvider.templateProjectURL,
-         urlProvider.templateWithDepsProjectURL].forEach {
-            try projTargetVersionWriter.configure(projectAtURL: $0,
-                                              for: config.targetOS,
-                                              targetVersion: config.minDeploymentTarget)
-         }
+             urlProvider.templateWithDepsProjectURL].forEach {
+                try projTargetVersionWriter.configure(projectAtURL: $0,
+                                                      for: config.targetOS,
+                                                      targetVersion: config.minDeploymentTarget)
+             }
     }
     
     private func addDependencies(_ config: TronConfig) throws {
         try packageWriter.add(packages: config.packages,
-                               to: urlProvider.templateWithDepsProjectURL)
+                              to: urlProvider.templateWithDepsProjectURL)
         
         try podFileWriter.add(config.pods,
-                               minDeploymentTarget: config.minDeploymentTarget,
-                               projectURL: urlProvider.templateWithDepsProjectURL,
-                               targetOS: config.targetOS)
+                              minDeploymentTarget: config.minDeploymentTarget,
+                              projectURL: urlProvider.templateWithDepsProjectURL,
+                              targetOS: config.targetOS)
     }
     
     private func generateProducts(_ config: TronConfig) throws {
@@ -101,15 +101,15 @@ struct DependenciesImpactOnAppSizeMeasurer: DependenciesImpactOnAppSizeMeasuring
     private func frameworkDifferences(_ config: TronConfig) throws -> FrameworkDifferences? {
         guard let majorVersion = config.majorVersion, majorVersion < 12 else { return nil }
         let differences = try frameworkDifferencesProvider.differencesBetween(source: urlProvider.templateFrameworksDirectoryURL, destination: urlProvider.templatWithDepsFrameworksDirectoryURL)
-       
+        
         logger.logInfo("The following libswift dylibs are added post linking the dependencies:",
                        subMessages: differences.files.map { $0.debugDescription } )
         logger.logInfoOnNewLine("\tApproximate net contribution of the above libswift dylibs: \(differences.netSizeContribution) bytes ~= \(differences.netSizeContributionFormatted)")
         return differences
     }
     
-    private func analyseGeneratedProducts(_ config: TronConfig) {
-        performInstallSizeAnalysis(config)
+    private func analyseGeneratedProducts(_ config: TronConfig) throws {
+        try performInstallSizeAnalysis(config)
         if config.shouldPerformDownloadSizeAnalysis {
             performDownloadSizeAnalysis()
         }
@@ -117,17 +117,17 @@ struct DependenciesImpactOnAppSizeMeasurer: DependenciesImpactOnAppSizeMeasuring
     
     private func logGeneratedProjectsInfo() {
         logger.logInfoOnNewLine("ℹ️  The temporary directories are the following:",
-                       subMessages: ["Base project:  \(urlProvider.templateDestinationDirectoryURL.path)",
-                       "Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL.path)"],
-                       footerInfo:
-                       "If interested, please explore the above projects to know more about their base setup, impact post adding the dependencies, their respective products - archives/IPAs etc.")
+                                subMessages: ["Base project:  \(urlProvider.templateDestinationDirectoryURL.path)",
+                                              "Project/Workspace post adding dependencies:  \(urlProvider.templateWithDepsDestinationDirectoryURL.path)"],
+                                footerInfo:
+                                    "If interested, please explore the above projects to know more about their base setup, impact post adding the dependencies, their respective products - archives/IPAs etc.")
     }
     
     private func performDownloadSizeAnalysis() {
         do {
             logger.logInfoOnNewLine("🚀 Performing Download Size analysis...")
             let ipaSizeDifference = try tronFileManager.fileSizeDifferenceBetween(url1: urlProvider.templateIPAURL,
-                                                                                          url2: urlProvider.templateWithDepsIPAURL)
+                                                                                  url2: urlProvider.templateWithDepsIPAURL)
             
             logger.logSuccess("Approximate download size contribution is: \(ipaSizeDifference.differenceInBytes) bytes ~= \(ipaSizeDifference.formattedDifference)")
         } catch let error {
@@ -135,22 +135,19 @@ struct DependenciesImpactOnAppSizeMeasurer: DependenciesImpactOnAppSizeMeasuring
         }
     }
     
-    private func performInstallSizeAnalysis(_ config: TronConfig) {
-        do {
-            logger.logInfoOnNewLine("🚀 Performing Install Size analysis...")
-            
-            let archiveSizeDifference = (try tronFileManager.sizeOfFolder(at: urlProvider.templateWithDepsAppURL)) - (try tronFileManager.sizeOfFolder(at: urlProvider.templateAppURL))
-            
-            if let frameworkDifferences = try frameworkDifferences(config) {
-                logger.logSuccess("Approximate install size contribution including added dylibs is: \(archiveSizeDifference) bytes ~= \(tronFileManager.formattedFileSizeRepresentation(forBytes: archiveSizeDifference))")
-                let effectiveDifference = UInt64(archiveSizeDifference) - frameworkDifferences.netSizeContribution
-                logger.logSuccess("Approximate install size contribution without considering libSwift dylibs(iOS 12 and above) is: \(effectiveDifference) bytes ~= \(tronFileManager.formattedFileSizeRepresentation(forBytes: Int64(effectiveDifference)))")
-            } else {
-                logger.logSuccess("Approximate install size contribution is: \(archiveSizeDifference) bytes ~= \(tronFileManager.formattedFileSizeRepresentation(forBytes: archiveSizeDifference))")
-            }
-        } catch let error {
-            logger.logError(error.localizedDescription)
+    private func performInstallSizeAnalysis(_ config: TronConfig) throws {
+        logger.logInfoOnNewLine("🚀 Performing Install Size analysis...")
+        
+        let archiveSizeDifference = (try tronFileManager.sizeOfFolder(at: urlProvider.templateWithDepsAppURL)) - (try tronFileManager.sizeOfFolder(at: urlProvider.templateAppURL))
+        
+        if let frameworkDifferences = try frameworkDifferences(config) {
+            logger.logSuccess("Approximate install size contribution including added dylibs is: \(archiveSizeDifference) bytes ~= \(tronFileManager.formattedFileSizeRepresentation(forBytes: archiveSizeDifference))")
+            let effectiveDifference = UInt64(archiveSizeDifference) - frameworkDifferences.netSizeContribution
+            logger.logSuccess("Approximate install size contribution without considering libSwift dylibs(iOS 12 and above) is: \(effectiveDifference) bytes ~= \(tronFileManager.formattedFileSizeRepresentation(forBytes: Int64(effectiveDifference)))")
+        } else {
+            logger.logSuccess("Approximate install size contribution is: \(archiveSizeDifference) bytes ~= \(tronFileManager.formattedFileSizeRepresentation(forBytes: archiveSizeDifference))")
         }
+        
     }
 }
 
