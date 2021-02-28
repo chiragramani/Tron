@@ -5,10 +5,6 @@
 
 Tron is command-line Swift tool that helps with providing an approximate download and install size contribution of a set of swift package(s) and cocoapod(s).
 
-Update config.json that has information about the swift packages as well as cocoapods. 
-
-Then run **swift run Tron tronSampleConfig.json**
-
 ## Why measuring contribution of a dependency is important?
 
 Well, we are adding a new member(dependency) to our application that is going to help us with a lot of things. Since this also adds to the binary size and given the fact that binary size is always related to the [download/install experience](https://github.com/chiragramani/Tron/blob/main/Download-Install-Size.md) that users go through, it's worth exploring its contribution. This analysis helps us in a lot of ways:
@@ -24,6 +20,14 @@ $ cd Tron
 $ swift build -c release
 $ .build/release/Tron <path_to_tron_config_json_file>
 ```
+
+## Run
+
+1. Update tronSampleConfig.json that has information about the swift packages as well as the cocoapods. 
+2. Then run **swift run Tron tronSampleConfig.json**
+
+<img width="1529" alt="Screenshot 2021-03-01 at 3 59 56 AM" src="https://user-images.githubusercontent.com/11925399/109435880-b51dee80-7a42-11eb-8cea-b9ce2d1f63de.png">
+
 
 ## System Requirements
 
