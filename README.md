@@ -26,6 +26,18 @@ Well, we are adding a new member(dependency) to our application that is going to
     * Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully.
     * Post the above, please update the ExportOptions.plist with your teamID and other fields as per your use-case.
 
+## FAQs
+
+### Why do we have to mention minimum deployment target version in the config file ? (ABI Stability)
+Swift became ABI stable with the release of Swift 5.0🎉. So if the deployment target is macOS 10.14.4, iOS 12.2, tvOS 12.2, watchOS 5.2 and above - then applications no longer need to be distributed with the Swift runtime libraries hence reducing download size. But if you want to support earlier versions, then Swift runtime would be bundled with your app binary. For earlier versions, it becomes important to understand the libswift dynamic libraries that would be introduced and their respective contribution(s) when exploring a particular dependency.
+
+For example:
+* When adding Swift Package Kingfisher@6.0.0 for minimum deployment target iOS 11.3 - the following libswift dylibs are added: 
+![Screenshot 2021-03-01 at 3 08 46 AM](https://user-images.githubusercontent.com/11925399/109434838-1fcc2b80-7a3d-11eb-93ca-898a41dfac78.jpg)
+As we can see, 9 libswift dynamic libraries are introduced but none of them are added when the deployment target is iOS 12.2 or above. 
+
+Please note: your application might be adding either all or a few of the above dylibs already even before the dependency is being added, so please consider the existing state. E.g. if you are importing CoreLocation already in your application- then libswiftCoreLocation.dylib will not be a new addition, and hence its contribution of ~=730 KB can be respectively reduced.
+
 ## Libraries used
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
 
