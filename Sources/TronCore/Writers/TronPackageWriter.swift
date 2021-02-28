@@ -28,9 +28,9 @@ struct TronProjectAssistant: TronProjectAssisting {
             switch package {
             case .local(let localPackage):
                 logger.logInfo("\tAdding Local Package: \(localPackage) ...")
-                _ = try pbjProject.addLocalSwiftPackage(path: .init(localPackage.absolutePath),
+                _ = try pbjProject.addLocalSwiftPackage(path: .init(localPackage.relativePath),
                                                         productName: localPackage.productName,
-                                                        targetName: "Template")
+                                                        targetName:"Template")
             case .remote(let remotePackage):
                 logger.logInfo("\tAdding Remote Package: \(remotePackage) ...")
                 _ = try pbjProject.addSwiftPackage(repositoryURL: remotePackage.repositoryURL,

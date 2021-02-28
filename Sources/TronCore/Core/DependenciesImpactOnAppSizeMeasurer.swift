@@ -91,9 +91,11 @@ struct DependenciesImpactOnAppSizeMeasurer: DependenciesImpactOnAppSizeMeasuring
                                                   linkerArguments: config.linkerArguments))
         
         // Generating ipas
-        logger.logInfo("🚀 Generating IPAs for download size analysis...")
-        shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
-        shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL))
+        if config.shouldPerformDownloadSizeAnalysis {
+            logger.logInfo("🚀 Generating IPAs for download size analysis...")
+            shell.execute(ShellCommand.exportIPA(urlProvider.templateDestinationDirectoryURL))
+            shell.execute(ShellCommand.exportIPA(urlProvider.templateWithDepsDestinationDirectoryURL))
+        }
     }
     
     private func frameworkDifferences(_ config: TronConfig) throws -> FrameworkDifferences? {

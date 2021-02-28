@@ -31,12 +31,12 @@ struct SwiftRemotePackage: Codable, CustomDebugStringConvertible {
 
 struct SwiftLocalPackage: Codable, CustomDebugStringConvertible {
     let productName: String
-    let absolutePath: String
+    let relativePath: String
     
     // MARK: CustomDebugStringConvertible
     
     var debugDescription: String {
-        "\(productName) - \(absolutePath)"
+        "\(productName) - \(relativePath)"
     }
 }
 

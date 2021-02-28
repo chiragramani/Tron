@@ -10,7 +10,7 @@
     {
       "local": {
         "productName": "",
-        "absolutePath": ""
+        "relativePath": "~/Documents/<PATH-TO-YOUR-PACKAGE>"
       }
     },
   ],

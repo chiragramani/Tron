@@ -39,7 +39,7 @@ private extension SwiftPackage {
                 && remote.exactVersion.isNonEmpty
                 && remote.repositoryURL.isNonEmpty
         case .local(let local):
-            return local.absolutePath.isNonEmpty
+            return local.relativePath.isNonEmpty
                 && local.productName.isNonEmpty
         }
     }
