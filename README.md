@@ -21,14 +21,11 @@ Well, we are adding a new member(dependency) to our application that is going to
 
 * Swift 5.3 or later
 * Xcode 12.0 or later
-* MacOS 10.15.4 or later
-* Support is included for the Swift Package Manager
 * If measuring pods contribution, then cocoapods should be installed.
 
 **Please note:**
-1. Currently, the above works only with Xcode 12.
-2. Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully. 
-3. Post the above, please update the ExportOptions.plist with your teamID and other fields as per your use-case.
+* Before running the swift command, please open the xcode project in the Sources/Resources/iOS folder. Update the team and signing information. This is a must since a lot of this is dependent on creating an ipa successfully. 
+* Post the above, please update the ExportOptions.plist with your teamID and other fields as per your use-case.
 
 ## Libraries used
 [tuist/XcodeProj](https://github.com/tuist/XcodeProj) | [swift-argument-parser](https://github.com/apple/swift-argument-parser)
