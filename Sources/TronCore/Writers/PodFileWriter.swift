@@ -7,17 +7,6 @@
 
 import Foundation
 
-struct Pod: Decodable, CustomDebugStringConvertible {
-    let name: String
-    let version: String
-    
-    // MARK: CustomDebugStringConvertible
-    
-    var debugDescription: String {
-        "\(name) - \(version)"
-    }
-}
-
 protocol PodFileWriting {
     func add(_ pods: [Pod],
              minDeploymentTarget: String,
@@ -69,7 +58,13 @@ struct PodFileWriter: PodFileWriting {
                                     targetOS: TargetOS) -> String {
         var podsString = ""
         pods.forEach { (pod) in
-            podsString.append("pod '\(pod.name)', '\(pod.version)'\n")
+            switch pod {
+            case .local(let localPod):
+                podsString.append("pod '\(localPod.name)', :path => '\(localPod.relativePath)'\n")
+            case .remote(let remotePod):
+                podsString.append("pod '\(remotePod.name)', '\(remotePod.exactVersion)'\n")
+            }
+            
         }
         let platformOverride = platform
             .replacingOccurrences(of: "version", with: minDeploymentTarget)

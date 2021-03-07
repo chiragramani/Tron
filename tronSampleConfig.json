@@ -1,37 +1,41 @@
 {
-  "packages": [
-    {
-      "remote": {
-        "productName": "Kingfisher",
-        "exactVersion": "6.1.1",
-        "repositoryURL": "https://github.com/onevcat/Kingfisher",
-      },
-    },
-    {
-      "local": {
-        "productName": "",
-        "relativePath": "~/Documents/<PATH-TO-YOUR-PACKAGE>"
-      }
-    },
-  ],
-  "linkerArguments": {
-    "codeSignIdentity": "",
-    "isCodeSigningRequired": false,
-    "isCodeSigningAllowed": false,
-    "codeSignEntitlements": "",
-    "architecture": "arm64"
-  },
-  "targetOS": "iOS",
-  "minDeploymentTarget": "14.3",
-  "pods": [
+   "packages":[
       {
-          "name": "RxSwift",
-          "version": "6.1.0"
+         "remote": {
+            "productName":"Kingfisher",
+            "exactVersion":"6.1.1",
+            "repositoryURL":"https://github.com/onevcat/Kingfisher"
+         }
       },
       {
-          "name": "RxCocoa",
-          "version": "6.1.0"
+         "local":{
+            "productName":"",
+            "relativePath":"~/Documents/<PATH-TO-YOUR-PACKAGE>"
+         }
       }
-  ],
-  "shouldPerformDownloadSizeAnalysis": false
+   ],
+   "linkerArguments":{
+      "codeSignIdentity":"",
+      "isCodeSigningRequired":false,
+      "isCodeSigningAllowed":false,
+      "codeSignEntitlements":"",
+      "architecture":"arm64"
+   },
+   "targetOS":"iOS",
+   "minDeploymentTarget":"14.3",
+   "pods":[
+      {
+         "remote": {
+            "name":"RxSwift",
+            "exactVersion":"6.1.0"
+         }
+      },
+      {
+         "local": {
+            "name":"",
+            "relativePath":"~/Documents/<PATH-TO-YOUR-POD>"
+         }
+      }
+   ],
+   "shouldPerformDownloadSizeAnalysis":false
 }

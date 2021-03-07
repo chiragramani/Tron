@@ -79,7 +79,14 @@ private extension String {
 
 private extension Pod {
     var isValid: Bool {
-        name.isNonEmpty && version.isNonEmpty
+        /// TODO: We have an opportunity to improve the validation here. isNonEmpty can be a good starter validation check, but we also need to make sure whether paths follow the bases regex and files are present at those locations also or not. 
+        switch self {
+        case .local(let localPod):
+            return localPod.name.isNonEmpty && localPod.relativePath.isNonEmpty
+        case .remote(let remotePod):
+            return remotePod.exactVersion.isNonEmpty && remotePod.name.isNonEmpty
+        }
+        
     }
 }
 
