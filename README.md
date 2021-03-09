@@ -10,7 +10,7 @@ Tron is a simple command-line Swift tool that provides an approximate download a
 Well, we are adding a new member(dependency) to our application that is going to help us with a lot of things. Since this also adds to the binary size and given the fact that binary size is always related to the [download/install experience](https://github.com/chiragramani/Tron/blob/main/Download-Install-Size.md) that users go through, it's worth exploring its contribution. This analysis helps us in a lot of ways:
 1. It gives an approximate idea of the app size increase. If the size increase is surprising, it again opens an opportunity to collaborate and explore if there is a way to either get a thinned version of the dependency or maybe explore other dependencies for that matter, etc.
 2. It helps us to reason how similar dependencies stand against each other with their respective contributions to binary size.
-3. Peter Reinhardt has authored an amazing article that talks about the "Effect of Mobile App Size on Downloads". Please refer to the [article](https://www.google.com/search?client=safari&rls=en&q=Effect+of+Mobile+App+Size+on+Downloads&ie=UTF-8&oe=UTF-8) for more details about the impact on installation rate etc.
+3. Peter Reinhardt has authored an amazing article that talks about the "Effect of Mobile App Size on Downloads". Please refer to the [article](https://segment.com/blog/mobile-app-size-effect-on-downloads/) for more details about the impact on installation rate etc.
 
 ## Installation
 
