@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import TronCore
+@testable import TronKit
 
 final class UUIDGeneratingMock: UUIDGenerating {
     

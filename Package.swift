@@ -7,6 +7,9 @@ let package = Package(
     name: "Tron",
     defaultLocalization: "en",
     platforms: [.macOS(.v10_13)],
+    products: [
+        .executable(name: "Tron", targets: ["Tron"])
+    ],
     dependencies: [
         .package(name: "XcodeProj",
                  url: "https://github.com/tuist/xcodeproj.git",
@@ -16,15 +19,15 @@ let package = Package(
     ],
     targets: [
         .target(name: "Tron",
-                dependencies: ["TronCore"]),
+                dependencies: ["TronKit"]),
         .target(
-            name: "TronCore",
+            name: "TronKit",
             dependencies:["XcodeProj",
                           .product(name: "ArgumentParser",
                                    package: "swift-argument-parser")],
             resources: [.copy("Resources/iOS")]),
         .testTarget(
-            name: "TronCoreTests",
-            dependencies: ["TronCore"]),
+            name: "TronKitTests",
+            dependencies: ["TronKit"]),
     ]
 )

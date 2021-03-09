@@ -1,4 +1,4 @@
 import Foundation
-import TronCore
+import TronKit
 
 TronConfigInputCommand.main()

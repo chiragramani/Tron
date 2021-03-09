@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-@testable import TronCore
+@testable import TronKit
 
 final class TronCoreTests: XCTestCase {
     private let tronLogger = TronLoggingMock()
